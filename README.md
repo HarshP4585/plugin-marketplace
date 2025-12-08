@@ -6,7 +6,13 @@ Official plugin registry for [VerifyWise](https://verifywise.ai) - the AI Govern
 
 | Plugin | Description | Type |
 |--------|-------------|------|
-| [GDPR Compliance Checker](./plugins/gdpr-compliance-checker) | Automated GDPR compliance checking for AI systems | Framework |
+| [Slack Notifications](./plugins/slack-notifications) | Real-time Slack notifications for risks, tasks, and compliance | Integration |
+| [Jira Integration](./plugins/jira-integration) | Sync risks and tasks with Jira | Integration |
+| [Microsoft Teams](./plugins/microsoft-teams) | Teams notifications and alerts | Integration |
+| [GDPR Compliance Checker](./plugins/gdpr-compliance-checker) | Automated GDPR compliance checking | Framework |
+| [ISO 27001](./plugins/iso-27001) | ISO 27001 compliance framework | Framework |
+| [SOC 2 Compliance](./plugins/soc2-compliance) | SOC 2 Type I/II compliance tracking | Framework |
+| [Audit Trail](./plugins/audit-trail) | Comprehensive activity logging | Feature |
 
 ## Installing Plugins
 
@@ -52,7 +58,7 @@ plugin-marketplace/
 ├── plugins/               # Published plugins
 │   ├── plugin-name/       # Plugin source files
 │   └── plugin-name.zip    # Downloadable package
-└── templates/            # Development templates (not in registry)
+└── templates/             # Development templates (not in registry)
     ├── README.md          # Plugin development guide
     └── sample-plugin/     # Comprehensive sample plugin
 ```
