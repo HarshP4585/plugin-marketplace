@@ -1,5 +1,16 @@
 {
   "version": "1.0.0",
-  "generated": "2024-12-09T00:00:00Z",
-  "plugins": []
+  "generated": "2024-12-10T00:00:00Z",
+  "plugins": [
+    {
+      "id": "risk-importer",
+      "name": "Risk importer",
+      "description": "Bulk import risks from CSV or Excel files. Map columns, preview data, and import in one workflow.",
+      "version": "1.0.0",
+      "author": "VerifyWise",
+      "type": "feature",
+      "tags": ["import", "data", "bulk"],
+      "downloadUrl": "https://raw.githubusercontent.com/verifywise/plugin-marketplace/main/plugins/risk-importer"
+    }
+  ]
 }

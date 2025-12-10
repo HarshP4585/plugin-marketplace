@@ -1,0 +1,94 @@
+{
+  "id": "risk-importer",
+  "name": "Risk importer",
+  "description": "Bulk import risks from CSV or Excel files. Map columns, preview data, and import in one workflow.",
+  "version": "1.0.0",
+  "author": "VerifyWise",
+  "authorUrl": "https://verifywise.ai",
+  "type": "feature",
+  "homepage": "https://verifywise.ai/plugins/risk-importer",
+  "repository": "https://github.com/verifywise/verifywise",
+  "supportUrl": "https://verifywise.ai/docs/plugins/risk-importer",
+  "releaseDate": "2024-12-09",
+  "detailedDescription": "The Risk Importer plugin enables bulk import of risks from spreadsheet files. Features include:\n\n• Support for CSV and Excel (.xlsx) files\n• Column mapping UI to match your file structure\n• Preview with validation before import\n• Duplicate detection with skip/overwrite/create options\n• Auto-calculation of risk levels\n• Import to projects, use cases, or frameworks\n\nPerfect for teams migrating from spreadsheets or other GRC tools.",
+  "tags": ["import", "data", "bulk"],
+  "keywords": ["import", "csv", "excel", "bulk", "migration", "risk", "spreadsheet"],
+  "compatibility": {
+    "minCoreVersion": "1.8.0"
+  },
+  "permissions": [
+    "database:read",
+    "database:write",
+    "config:read"
+  ],
+  "config": {
+    "maxFileSizeMB": {
+      "type": "number",
+      "default": 10,
+      "min": 1,
+      "max": 50,
+      "label": "Maximum file size (MB)",
+      "description": "Maximum allowed file size for upload. Larger files may slow down parsing."
+    },
+    "defaultRiskType": {
+      "type": "select",
+      "options": ["project", "vendor"],
+      "default": "project",
+      "label": "Default risk type",
+      "description": "Pre-selected risk type when opening the import modal."
+    },
+    "defaultDuplicateAction": {
+      "type": "select",
+      "options": ["skip", "overwrite", "create"],
+      "default": "skip",
+      "label": "Default duplicate action",
+      "description": "Default action when duplicate risks are detected during import."
+    },
+    "autoCalculateRiskLevel": {
+      "type": "boolean",
+      "default": true,
+      "label": "Auto-calculate risk level",
+      "description": "Automatically calculate risk level from likelihood and severity if not provided."
+    },
+    "previewRowCount": {
+      "type": "number",
+      "default": 5,
+      "min": 3,
+      "max": 20,
+      "label": "Preview row count",
+      "description": "Number of rows to show in the preview step."
+    }
+  },
+  "faq": [
+    {
+      "question": "What file formats are supported?",
+      "answer": "The plugin supports CSV files and Excel files (.xlsx). For Excel files with multiple sheets, the first sheet is used."
+    },
+    {
+      "question": "Which fields are required?",
+      "answer": "Only risk_name and risk_description are required. Risk owner is assigned through the UI after import. All other fields are optional and will use defaults if not mapped."
+    },
+    {
+      "question": "How are duplicates handled?",
+      "answer": "Before import, the plugin checks for existing risks with the same name. You can choose to skip, overwrite, or create duplicates for each conflict."
+    },
+    {
+      "question": "Is the risk level calculated automatically?",
+      "answer": "Yes, if you provide likelihood and severity, the risk_level_autocalculated field is computed automatically based on the risk matrix."
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "name": "Initial release",
+      "date": "2024-12-09",
+      "changes": [
+        "CSV and Excel file parsing",
+        "Column mapping interface",
+        "Preview with validation",
+        "Duplicate detection",
+        "Project/framework linking"
+      ]
+    }
+  ]
+}
