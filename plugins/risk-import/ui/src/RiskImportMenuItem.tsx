@@ -61,10 +61,6 @@ export const RiskImportMenuItem: React.FC<RiskImportMenuItemProps> = ({
         "&:active": {
           transform: "scale(0.98)",
         },
-        "&:focus": {
-          outline: "2px solid #13715B",
-          outlineOffset: "2px",
-        },
       }}
     >
       <FileSpreadsheet size={24} color="#10b981" />
