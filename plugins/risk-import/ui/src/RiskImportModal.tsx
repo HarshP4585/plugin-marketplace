@@ -304,91 +304,143 @@ export const RiskImportModal: React.FC<RiskImportModalProps> = ({
         )}
 
         {/* Step 1: Download Template */}
-        <Box sx={{ mb: 4, pb: 3, borderBottom: "1px solid #e5e7eb" }}>
-          <Typography sx={{ fontWeight: 600, fontSize: "13px", color: "#344054", mb: 0.5 }}>
-            Step 1: Download Excel Template
-          </Typography>
-          <Typography sx={{ fontSize: "13px", color: "#667085", mb: 1.5 }}>
-            Download the template with dropdown menus for enum fields and sample data.
-          </Typography>
-          <Button
-            variant="outlined"
-            size="small"
-            startIcon={<Download size={14} />}
-            onClick={handleDownloadTemplate}
-            disabled={loading}
-            sx={{
-              textTransform: "none",
-              fontSize: "13px",
-              borderColor: "#d0d5dd",
-              color: "#344054",
-              "&:hover": {
-                borderColor: "#98A2B3",
-                backgroundColor: "#f9fafb",
-              },
-            }}
-          >
-            Download Template
-          </Button>
+        <Box
+          sx={{
+            mb: 2.5,
+            p: 2.5,
+            border: "1px solid #E0E4E9",
+            borderRadius: "4px",
+            backgroundColor: "#FCFCFD",
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
+            <Box
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: "4px",
+                backgroundColor: "#E8F5F1",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <Download size={20} color="#13715B" />
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <Typography sx={{ fontWeight: 600, fontSize: "14px", color: "#101828", mb: 0.5 }}>
+                Step 1: Download Excel Template
+              </Typography>
+              <Typography sx={{ fontSize: "13px", color: "#475467", mb: 1.5 }}>
+                Download the template with dropdown menus for enum fields and sample data.
+              </Typography>
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<Download size={14} />}
+                onClick={handleDownloadTemplate}
+                disabled={loading}
+                sx={{
+                  textTransform: "none",
+                  fontSize: "13px",
+                  borderColor: "#D0D5DD",
+                  color: "#344054",
+                  "&:hover": {
+                    borderColor: "#13715B",
+                    backgroundColor: "#F8FDFB",
+                  },
+                }}
+              >
+                Download Template
+              </Button>
+            </Box>
+          </Box>
         </Box>
 
         {/* Step 2: Upload Excel */}
-        <Box sx={{ mb: 2 }}>
-          <Typography sx={{ fontWeight: 600, fontSize: "13px", color: "#344054", mb: 0.5 }}>
-            Step 2: Upload Filled Excel File
-          </Typography>
-          <Typography sx={{ fontSize: "13px", color: "#667085", mb: 1.5 }}>
-            Upload your Excel file with risk data.
-          </Typography>
-
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-            <Button
-              variant="outlined"
-              size="small"
-              component="label"
-              startIcon={<Upload size={14} />}
+        <Box
+          sx={{
+            mb: 2.5,
+            p: 2.5,
+            border: "1px solid #E0E4E9",
+            borderRadius: "4px",
+            backgroundColor: "#FCFCFD",
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
+            <Box
               sx={{
-                textTransform: "none",
-                fontSize: "13px",
-                borderColor: "#d0d5dd",
-                color: "#344054",
-                "&:hover": {
-                  borderColor: "#98A2B3",
-                  backgroundColor: "#f9fafb",
-                },
+                width: 40,
+                height: 40,
+                borderRadius: "4px",
+                backgroundColor: "#E8F5F1",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
               }}
             >
-              Choose File
-              <input
-                type="file"
-                hidden
-                accept=".xlsx"
-                onChange={handleFileUpload}
-                ref={fileInputRef}
-              />
-            </Button>
-
-            {uploadedFile ? (
-              <Chip
-                label={uploadedFile.name}
-                onDelete={handleReset}
-                size="small"
-                sx={{
-                  fontSize: "12px",
-                  backgroundColor: "#f0fdf4",
-                  color: "#15803d",
-                  border: "1px solid #bbf7d0",
-                  "& .MuiChip-deleteIcon": {
-                    color: "#15803d",
-                    fontSize: "16px",
-                  },
-                }}
-              />
-            ) : (
-              <Typography sx={{ fontSize: "13px", color: "#98A2B3" }}>
-                or drag and drop .xlsx file here
+              <Upload size={20} color="#13715B" />
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <Typography sx={{ fontWeight: 600, fontSize: "14px", color: "#101828", mb: 0.5 }}>
+                Step 2: Upload Filled Excel File
               </Typography>
-            )}
+              <Typography sx={{ fontSize: "13px", color: "#475467", mb: 1.5 }}>
+                Upload your Excel file with risk data.
+              </Typography>
+
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  component="label"
+                  startIcon={<Upload size={14} />}
+                  sx={{
+                    textTransform: "none",
+                    fontSize: "13px",
+                    borderColor: "#D0D5DD",
+                    color: "#344054",
+                    "&:hover": {
+                      borderColor: "#13715B",
+                      backgroundColor: "#F8FDFB",
+                    },
+                  }}
+                >
+                  Choose File
+                  <input
+                    type="file"
+                    hidden
+                    accept=".xlsx"
+                    onChange={handleFileUpload}
+                    ref={fileInputRef}
+                  />
+                </Button>
+
+                {uploadedFile ? (
+                  <Chip
+                    label={uploadedFile.name}
+                    onDelete={handleReset}
+                    size="small"
+                    sx={{
+                      fontSize: "12px",
+                      backgroundColor: "#F0FDF4",
+                      color: "#13715B",
+                      border: "1px solid #D1FAE5",
+                      "& .MuiChip-deleteIcon": {
+                        color: "#13715B",
+                        fontSize: "16px",
+                      },
+                    }}
+                  />
+                ) : (
+                  <Typography sx={{ fontSize: "13px", color: "#98A2B3" }}>
+                    or drag and drop .xlsx file here
+                  </Typography>
+                )}
+              </Box>
+            </Box>
           </Box>
         </Box>
 
