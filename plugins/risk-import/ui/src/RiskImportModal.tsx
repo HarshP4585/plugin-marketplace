@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import { Download, Upload, FileText, CheckCircle, XCircle, X } from "lucide-react";
 import * as ExcelJS from "exceljs";
+import { colors, typography, borderRadius, buttonStyles, cardStyles, tableStyles, chipStyles, modalStyles } from "./theme";
 
 interface RiskImportModalProps {
   open: boolean;
@@ -235,7 +236,7 @@ export const RiskImportModal: React.FC<RiskImportModalProps> = ({
       fullWidth
       PaperProps={{
         sx: {
-          borderRadius: "12px",
+          borderRadius: borderRadius.lg,
           maxHeight: "90vh",
         },
       }}
@@ -245,7 +246,7 @@ export const RiskImportModal: React.FC<RiskImportModalProps> = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          borderBottom: "1px solid #e5e7eb",
+          borderBottom: `1px solid ${colors.borderLight}`,
           pb: 2,
         }}
       >
@@ -436,9 +437,9 @@ export const RiskImportModal: React.FC<RiskImportModalProps> = ({
                   disabled={loading}
                   startIcon={loading ? <CircularProgress size={16} /> : <CheckCircle size={16} />}
                   sx={{
-                    backgroundColor: "#13715B",
+                    backgroundColor: colors.primary,
                     "&:hover": {
-                      backgroundColor: "#0f5a47",
+                      backgroundColor: colors.primaryHover,
                     },
                   }}
                 >

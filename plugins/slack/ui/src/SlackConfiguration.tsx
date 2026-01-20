@@ -24,6 +24,7 @@ import {
   ToggleLeft,
   ToggleRight,
 } from "lucide-react";
+import { colors, typography, borderRadius, tableStyles } from "./theme";
 
 interface SlackWorkspace {
   id: number;
@@ -227,15 +228,15 @@ export const SlackConfiguration: React.FC<SlackConfigurationProps> = ({
           disabled={slackWorkspaces.length === 0}
           sx={{
             height: "34px",
-            backgroundColor: "#13715B",
+            backgroundColor: colors.primary,
             textTransform: "none",
-            fontSize: "13px",
-            fontWeight: 500,
+            fontSize: typography.sizes.md,
+            fontWeight: typography.weights.medium,
             "&:hover": {
-              backgroundColor: "#0f5a47",
+              backgroundColor: colors.primaryHover,
             },
             "&:disabled": {
-              backgroundColor: "#d0d5dd",
+              backgroundColor: colors.disabled,
             },
           }}
         >
@@ -250,23 +251,23 @@ export const SlackConfiguration: React.FC<SlackConfigurationProps> = ({
           <Typography fontSize={13}>Loading workspaces...</Typography>
         </Box>
       ) : (
-        <TableContainer sx={{ border: "1px solid #d0d5dd", borderRadius: "8px" }}>
+        <TableContainer sx={{ border: `1px solid ${colors.border}`, borderRadius: borderRadius.md }}>
           <Table>
-            <TableHead sx={{ backgroundColor: "#f9fafb" }}>
+            <TableHead sx={{ backgroundColor: colors.backgroundSecondary }}>
               <TableRow>
-                <TableCell sx={{ fontWeight: 600, fontSize: "12px", textTransform: "uppercase", color: "#475467" }}>
+                <TableCell sx={{ ...tableStyles.header }}>
                   Team Name
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: "12px", textTransform: "uppercase", color: "#475467" }}>
+                <TableCell sx={{ ...tableStyles.header }}>
                   Channel
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: "12px", textTransform: "uppercase", color: "#475467" }}>
+                <TableCell sx={{ ...tableStyles.header }}>
                   Creation Date
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: "12px", textTransform: "uppercase", color: "#475467" }}>
+                <TableCell sx={{ ...tableStyles.header }}>
                   Active
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: "12px", textTransform: "uppercase", color: "#475467" }}>
+                <TableCell sx={{ ...tableStyles.header }}>
                   Action
                 </TableCell>
               </TableRow>
@@ -276,16 +277,16 @@ export const SlackConfiguration: React.FC<SlackConfigurationProps> = ({
                 slackWorkspaces
                   .slice(tablePage * rowsPerPage, tablePage * rowsPerPage + rowsPerPage)
                   .map((workspace) => (
-                    <TableRow key={workspace.id} sx={{ "&:hover": { backgroundColor: "#f9fafb" } }}>
-                      <TableCell sx={{ fontSize: "13px" }}>{workspace.team_name}</TableCell>
-                      <TableCell sx={{ fontSize: "13px" }}>#{workspace.channel}</TableCell>
-                      <TableCell sx={{ fontSize: "13px" }}>
+                    <TableRow key={workspace.id} sx={{ ...tableStyles.row }}>
+                      <TableCell sx={{ ...tableStyles.cell }}>{workspace.team_name}</TableCell>
+                      <TableCell sx={{ ...tableStyles.cell }}>#{workspace.channel}</TableCell>
+                      <TableCell sx={{ ...tableStyles.cell }}>
                         {workspace.created_at ? new Date(workspace.created_at).toLocaleDateString() : "-"}
                       </TableCell>
-                      <TableCell sx={{ fontSize: "13px" }}>
+                      <TableCell sx={{ ...tableStyles.cell }}>
                         {workspace.is_active ? "Yes" : "No"}
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ ...tableStyles.cell }}>
                         <Stack direction="row" spacing={1}>
                           <Button
                             size="small"
@@ -294,10 +295,10 @@ export const SlackConfiguration: React.FC<SlackConfigurationProps> = ({
                             sx={{
                               minWidth: "auto",
                               px: 1,
-                              fontSize: "12px",
+                              fontSize: typography.sizes.sm,
                               textTransform: "none",
-                              borderColor: "#d0d5dd",
-                              color: "#344054",
+                              borderColor: colors.border,
+                              color: colors.textSecondary,
                             }}
                             title={workspace.is_active ? "Disable" : "Enable"}
                           >
@@ -311,7 +312,7 @@ export const SlackConfiguration: React.FC<SlackConfigurationProps> = ({
                             sx={{
                               minWidth: "auto",
                               px: 1,
-                              fontSize: "12px",
+                              fontSize: typography.sizes.sm,
                               textTransform: "none",
                             }}
                             title="Delete"
@@ -371,8 +372,8 @@ export const SlackConfiguration: React.FC<SlackConfigurationProps> = ({
         >
           <Box
             sx={{
-              backgroundColor: "white",
-              borderRadius: "8px",
+              backgroundColor: colors.background,
+              borderRadius: borderRadius.md,
               p: 3,
               maxWidth: "600px",
               width: "90%",
@@ -420,8 +421,8 @@ export const SlackConfiguration: React.FC<SlackConfigurationProps> = ({
                       <Checkbox
                         checked={globalRoutingTypes.indexOf(option) > -1}
                         sx={{
-                          color: "#13715B",
-                          "&.Mui-checked": { color: "#13715B" },
+                          color: colors.primary,
+                          "&.Mui-checked": { color: colors.primary },
                         }}
                       />
                       <Typography fontSize={13}>{option}</Typography>
@@ -435,7 +436,7 @@ export const SlackConfiguration: React.FC<SlackConfigurationProps> = ({
               <Button
                 variant="outlined"
                 onClick={() => setIsRoutingModalOpen(false)}
-                sx={{ textTransform: "none", fontSize: "13px" }}
+                sx={{ textTransform: "none", fontSize: typography.sizes.md }}
               >
                 Cancel
               </Button>
@@ -447,10 +448,10 @@ export const SlackConfiguration: React.FC<SlackConfigurationProps> = ({
                 }}
                 disabled={globalRoutingTypes.length === 0}
                 sx={{
-                  backgroundColor: "#13715B",
+                  backgroundColor: colors.primary,
                   textTransform: "none",
-                  fontSize: "13px",
-                  "&:hover": { backgroundColor: "#0f5a47" },
+                  fontSize: typography.sizes.md,
+                  "&:hover": { backgroundColor: colors.primaryHover },
                 }}
               >
                 Save Changes

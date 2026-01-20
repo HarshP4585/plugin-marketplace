@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import type { GridProps } from "@mui/material";
 import { RefreshCw, XCircle, Eye, ChevronsUpDown } from "lucide-react";
+import { colors, typography, borderRadius, cardStyles, tableStyles, chipStyles, buttonStyles, modalStyles } from "./theme";
 
 interface SelectorVerticalProps {
   className?: string;
@@ -227,6 +228,12 @@ export const MLFlowTab: React.FC<MLFlowTabProps> = ({ apiServices }) => {
           startIcon={<RefreshCw size={16} />}
           onClick={handleRefresh}
           disabled={loading}
+          sx={{
+            ...buttonStyles.base,
+            ...buttonStyles.sizes.medium,
+            ...buttonStyles.primary.outlined,
+            textTransform: "none",
+          }}
         >
           Sync
         </Button>
@@ -234,28 +241,28 @@ export const MLFlowTab: React.FC<MLFlowTabProps> = ({ apiServices }) => {
 
       {/* Header Cards */}
       <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
-        <Card sx={{ flex: "1 1 200px", minWidth: 150 }}>
+        <Card sx={{ flex: "1 1 200px", minWidth: 150, ...cardStyles.base }}>
           <CardContent>
-            <Typography variant="body2" color="text.secondary">Models</Typography>
-            <Typography variant="h4" fontWeight={600}>{summaryStats.total}</Typography>
+            <Typography variant="body2" sx={{ color: colors.textTertiary, fontSize: typography.sizes.md }}>Models</Typography>
+            <Typography variant="h4" sx={{ fontWeight: typography.weights.semibold, color: colors.textPrimary }}>{summaryStats.total}</Typography>
           </CardContent>
         </Card>
-        <Card sx={{ flex: "1 1 200px", minWidth: 150 }}>
+        <Card sx={{ flex: "1 1 200px", minWidth: 150, ...cardStyles.base }}>
           <CardContent>
-            <Typography variant="body2" color="text.secondary">Active</Typography>
-            <Typography variant="h4" fontWeight={600}>{summaryStats.active}</Typography>
+            <Typography variant="body2" sx={{ color: colors.textTertiary, fontSize: typography.sizes.md }}>Active</Typography>
+            <Typography variant="h4" sx={{ fontWeight: typography.weights.semibold, color: colors.textPrimary }}>{summaryStats.active}</Typography>
           </CardContent>
         </Card>
-        <Card sx={{ flex: "1 1 200px", minWidth: 150 }}>
+        <Card sx={{ flex: "1 1 200px", minWidth: 150, ...cardStyles.base }}>
           <CardContent>
-            <Typography variant="body2" color="text.secondary">Staging</Typography>
-            <Typography variant="h4" fontWeight={600}>{summaryStats.staging}</Typography>
+            <Typography variant="body2" sx={{ color: colors.textTertiary, fontSize: typography.sizes.md }}>Staging</Typography>
+            <Typography variant="h4" sx={{ fontWeight: typography.weights.semibold, color: colors.textPrimary }}>{summaryStats.staging}</Typography>
           </CardContent>
         </Card>
-        <Card sx={{ flex: "1 1 200px", minWidth: 150 }}>
+        <Card sx={{ flex: "1 1 200px", minWidth: 150, ...cardStyles.base }}>
           <CardContent>
-            <Typography variant="body2" color="text.secondary">Experiments</Typography>
-            <Typography variant="h4" fontWeight={600}>{summaryStats.experiments}</Typography>
+            <Typography variant="body2" sx={{ color: colors.textTertiary, fontSize: typography.sizes.md }}>Experiments</Typography>
+            <Typography variant="h4" sx={{ fontWeight: typography.weights.semibold, color: colors.textPrimary }}>{summaryStats.experiments}</Typography>
           </CardContent>
         </Card>
       </Box>
@@ -263,18 +270,18 @@ export const MLFlowTab: React.FC<MLFlowTabProps> = ({ apiServices }) => {
       {/* Table Section */}
       <Box sx={{ mt: 4, mb: 2 }}>
         {mlflowData.length === 0 && !loading ? (
-          <Box sx={{ textAlign: "center", py: 4, color: "text.secondary" }}>
-            <Typography>No MLFlow runs have been synced yet. Configure the integration and click Sync to pull the latest models.</Typography>
+          <Box sx={{ textAlign: "center", py: 4, color: colors.textTertiary }}>
+            <Typography sx={{ fontSize: typography.sizes.md }}>No MLFlow runs have been synced yet. Configure the integration and click Sync to pull the latest models.</Typography>
           </Box>
         ) : (
-          <TableContainer sx={{ border: "1px solid #d0d5dd", borderRadius: "8px" }}>
+          <TableContainer sx={{ border: `1px solid ${colors.border}`, borderRadius: borderRadius.md }}>
             <Table sx={{ minWidth: 800 }}>
-              <TableHead sx={{ backgroundColor: "#f9fafb" }}>
+              <TableHead sx={{ backgroundColor: colors.backgroundSecondary }}>
                 <TableRow>
                   {["Model Name", "Version", "Status", "Created", "Last Updated", "Description", "Actions"].map((header) => (
                     <TableCell
                       key={header}
-                      sx={{ fontWeight: 600, fontSize: "12px", textTransform: "uppercase", color: "#475467" }}
+                      sx={tableStyles.header}
                     >
                       {header}
                     </TableCell>
@@ -285,44 +292,36 @@ export const MLFlowTab: React.FC<MLFlowTabProps> = ({ apiServices }) => {
                 {displayData.map((model) => (
                   <TableRow
                     key={model.id}
-                    sx={{ "&:hover": { backgroundColor: "#f9fafb" }, cursor: "pointer" }}
+                    sx={{ ...tableStyles.row, cursor: "pointer" }}
                     onClick={() => handleModelClick(model)}
                   >
-                    <TableCell sx={{ fontSize: "13px" }}>
+                    <TableCell sx={tableStyles.cell}>
                       {model.model_name}
                     </TableCell>
-                    <TableCell sx={{ fontSize: "13px" }}>
+                    <TableCell sx={tableStyles.cell}>
                       {model.version}
                     </TableCell>
-                    <TableCell sx={{ fontSize: "13px" }}>
+                    <TableCell sx={tableStyles.cell}>
                       <Chip
                         label={model.lifecycle_stage}
                         size="small"
                         sx={{
-                          borderRadius: "4px",
-                          fontSize: "11px",
-                          backgroundColor:
-                            model.lifecycle_stage.toLowerCase() === "production"
-                              ? "rgba(34, 197, 94, 0.1)"
-                              : model.lifecycle_stage.toLowerCase() === "staging"
-                              ? "rgba(234, 179, 8, 0.1)"
-                              : "rgba(107, 114, 128, 0.1)",
-                          color:
-                            model.lifecycle_stage.toLowerCase() === "production"
-                              ? "#16a34a"
-                              : model.lifecycle_stage.toLowerCase() === "staging"
-                              ? "#ca8a04"
-                              : "#4b5563",
+                          ...chipStyles.base,
+                          ...(model.lifecycle_stage.toLowerCase() === "production"
+                            ? chipStyles.success
+                            : model.lifecycle_stage.toLowerCase() === "staging"
+                            ? chipStyles.warning
+                            : chipStyles.neutral),
                         }}
                       />
                     </TableCell>
-                    <TableCell sx={{ fontSize: "13px" }}>
+                    <TableCell sx={tableStyles.cell}>
                       {formatDate(model.creation_timestamp)}
                     </TableCell>
-                    <TableCell sx={{ fontSize: "13px" }}>
+                    <TableCell sx={tableStyles.cell}>
                       {formatDate(model.last_updated_timestamp)}
                     </TableCell>
-                    <TableCell sx={{ fontSize: "13px", maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <TableCell sx={{ ...tableStyles.cell, maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis" }}>
                       {model.description || "No description"}
                     </TableCell>
                     <TableCell>
@@ -340,7 +339,7 @@ export const MLFlowTab: React.FC<MLFlowTabProps> = ({ apiServices }) => {
               {mlflowData.length > 0 && (
                 <TableFooter>
                   <TableRow>
-                    <TableCell sx={{ fontSize: "13px", color: "#667085" }}>
+                    <TableCell sx={{ fontSize: typography.sizes.md, color: colors.textTertiary }}>
                       Showing {getRange} of {mlflowData.length} model(s)
                     </TableCell>
                     <TablePagination
@@ -357,7 +356,7 @@ export const MLFlowTab: React.FC<MLFlowTabProps> = ({ apiServices }) => {
                           IconComponent: SelectorVertical,
                         },
                       }}
-                      sx={{ fontSize: "13px" }}
+                      sx={{ fontSize: typography.sizes.md }}
                     />
                   </TableRow>
                 </TableFooter>
@@ -376,20 +375,19 @@ export const MLFlowTab: React.FC<MLFlowTabProps> = ({ apiServices }) => {
             left: 0,
             width: "100%",
             height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            zIndex: 9999,
+            ...modalStyles.overlay,
             display: "flex",
             justifyContent: "center",
             alignItems: "center"
           }}
         >
-          <Card sx={{ maxWidth: 600, width: "90%", maxHeight: "80vh", overflow: "auto" }}>
+          <Card sx={{ ...modalStyles.content }}>
             <CardContent>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, fontSize: "15px" }}>
+                <Typography variant="h6" sx={{ ...modalStyles.title, fontSize: typography.sizes.xl }}>
                   {selectedModel.model_name}
                 </Typography>
-                <IconButton onClick={handleCloseModal}>
+                <IconButton onClick={handleCloseModal} sx={{ color: colors.textTertiary }}>
                   <XCircle size={20} />
                 </IconButton>
               </Box>
