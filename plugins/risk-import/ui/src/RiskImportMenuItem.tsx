@@ -4,18 +4,24 @@ import { FileSpreadsheet } from "lucide-react";
 
 interface RiskImportMenuItemProps {
   onTriggerModal?: (componentName: string) => void;
+  onOpenImportModal?: () => void;
   onMenuClose?: () => void;
 }
 
 export const RiskImportMenuItem: React.FC<RiskImportMenuItemProps> = ({
   onTriggerModal,
+  onOpenImportModal,
   onMenuClose,
 }) => {
   const handleClick = () => {
+    // Close the menu first
     if (onMenuClose) {
       onMenuClose();
     }
-    if (onTriggerModal) {
+    // Open the import modal (prefer direct callback over trigger system)
+    if (onOpenImportModal) {
+      onOpenImportModal();
+    } else if (onTriggerModal) {
       onTriggerModal("RiskImportModal");
     }
   };
