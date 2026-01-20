@@ -230,7 +230,9 @@ export const RiskImportModal: React.FC<RiskImportModalProps> = ({
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "space-between",
-          pb: 1,
+          pb: 2,
+          pt: 2.5,
+          px: 3,
         }}
       >
         <Box>
@@ -250,7 +252,7 @@ export const RiskImportModal: React.FC<RiskImportModalProps> = ({
         </IconButton>
       </DialogTitle>
 
-      <DialogContent sx={{ pt: 2 }}>
+      <DialogContent sx={{ pt: 3, px: 3 }}>
         {/* Error Alert */}
         {error && (
           <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
@@ -304,7 +306,7 @@ export const RiskImportModal: React.FC<RiskImportModalProps> = ({
         )}
 
         {/* Step 1: Download Template */}
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 4, pb: 3, borderBottom: "1px solid #e5e7eb" }}>
           <Typography sx={{ fontWeight: 600, fontSize: "13px", color: "#344054", mb: 0.5 }}>
             Step 1: Download Excel Template
           </Typography>
@@ -333,7 +335,7 @@ export const RiskImportModal: React.FC<RiskImportModalProps> = ({
         </Box>
 
         {/* Step 2: Upload Excel */}
-        <Box sx={{ mb: 2 }}>
+        <Box sx={{ mb: 3, pt: 1 }}>
           <Typography sx={{ fontWeight: 600, fontSize: "13px", color: "#344054", mb: 0.5 }}>
             Step 2: Upload Filled Excel File
           </Typography>
@@ -394,7 +396,7 @@ export const RiskImportModal: React.FC<RiskImportModalProps> = ({
 
         {/* Preview Table */}
         {excelData.length > 0 && (
-          <Box sx={{ mb: 2 }}>
+          <Box sx={{ mb: 2, mt: 3, pt: 3, borderTop: "1px solid #e5e7eb" }}>
             <Typography sx={{ fontWeight: 600, fontSize: "13px", color: "#344054", mb: 1 }}>
               Preview ({excelData.length} risk{excelData.length > 1 ? "s" : ""} found)
             </Typography>
