@@ -10,10 +10,14 @@ export default defineConfig({
       insertTypesEntry: true,
     }),
   ],
+  define: {
+    "process.env.NODE_ENV": JSON.stringify("production"),
+  },
   build: {
     lib: {
       entry: resolve(__dirname, "src/index.tsx"),
-      formats: ["es"],
+      formats: ["iife"],
+      name: "PluginSlack",
       fileName: () => "index.esm.js",
     },
     rollupOptions: {
@@ -31,7 +35,7 @@ export default defineConfig({
           react: "React",
           "react-dom": "ReactDOM",
           "react/jsx-runtime": "jsxRuntime",
-          "@mui/material": "MaterialUI",
+          "@mui/material": "MUI",
           "@emotion/react": "emotionReact",
           "@emotion/styled": "emotionStyled",
         },

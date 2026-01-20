@@ -47,6 +47,7 @@
       },
       "ui": {
         "bundleUrl": "/api/plugins/slack/ui/dist/index.esm.js",
+        "globalName": "PluginSlack",
         "slots": [
           {
             "slotId": "page.plugin.config",
@@ -107,6 +108,7 @@
       },
       "ui": {
         "bundleUrl": "/api/plugins/mlflow/ui/dist/index.esm.js",
+        "globalName": "PluginMLFlow",
         "slots": [
           {
             "slotId": "page.models.tabs",
@@ -175,6 +177,7 @@
       },
       "ui": {
         "bundleUrl": "/api/plugins/risk-import/ui/dist/index.esm.js",
+        "globalName": "PluginRiskImport",
         "slots": [
           {
             "slotId": "page.risks.actions",
