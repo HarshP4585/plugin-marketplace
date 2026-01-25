@@ -1,104 +1,163 @@
 # VerifyWise Plugin Marketplace
 
-Official plugin registry for [VerifyWise](https://verifywise.ai) - the AI Governance platform.
+This repository contains the plugin marketplace for VerifyWise, including plugin registry, implementations, and documentation for building new plugins.
 
-## Available Plugins
+## Quick Links
 
-No plugins are currently published. Check back soon or contribute your own!
-
-## Installing Plugins
-
-1. Go to **Settings > Plugins** in your VerifyWise instance
-2. Browse available plugins in the Marketplace tab
-3. Click **Install** on the plugin you want
-4. Configure the plugin settings
-5. Enable the plugin
-
-## Creating Your Own Plugin
-
-See the [`templates`](./templates) directory for plugin development templates:
-
-| Template | Description |
+| Document | Description |
 |----------|-------------|
-| [template-basic-plugin](./templates/template-basic-plugin) | Simple plugin with lifecycle hooks and event handlers |
-| [template-custom-page](./templates/template-custom-page) | Plugin with a custom page in the sidebar |
-| [template-iframe-page](./templates/template-iframe-page) | Embed external content via iframe |
-| [template-notification-sender](./templates/template-notification-sender) | Send notifications to external services |
-| [template-webhook-receiver](./templates/template-webhook-receiver) | Receive and process webhooks |
-
-### Quick Start
-
-```bash
-# Clone this repository
-git clone https://github.com/bluewave-labs/plugin-marketplace.git
-
-# Copy a template to start your plugin
-cp -r templates/template-basic-plugin plugins/my-plugin
-
-# Edit the manifest and code
-code plugins/my-plugin
-
-# Test locally by copying to your VerifyWise installation
-cp -r plugins/my-plugin /path/to/verifywise/Servers/plugins/marketplace/
-```
+| [Plugin Development Guide](docs/PLUGIN_DEVELOPMENT_GUIDE.md) | Complete guide to building plugins |
+| [Plugin UI Guide](docs/PLUGIN_UI_GUIDE.md) | Building dynamic plugin UIs |
+| [Architecture Overview](docs/ARCHITECTURE.md) | System architecture and data flow |
+| [API Reference](docs/API_REFERENCE.md) | Plugin interface specifications |
 
 ## Repository Structure
 
 ```
 plugin-marketplace/
-├── README.md              # This file
-├── registry.json          # Plugin registry (auto-fetched by VerifyWise)
-├── plugins/               # Published plugins
-│   └── .gitkeep           # (empty - plugins coming soon)
-└── templates/             # Development templates (not in registry)
-    ├── README.md          # Plugin development guide
-    ├── template-basic-plugin/
-    ├── template-custom-page/
-    ├── template-iframe-page/
-    ├── template-notification-sender/
-    └── template-webhook-receiver/
+├── plugins.json              # Plugin registry (marketplace manifest)
+├── plugins/                  # Plugin implementations
+│   ├── mlflow/              # MLflow integration plugin
+│   │   ├── index.ts         # Backend plugin code
+│   │   ├── package.json     # Backend dependencies
+│   │   ├── README.md        # Plugin documentation
+│   │   └── ui/              # Frontend UI components
+│   │       ├── src/         # React components
+│   │       ├── vite.config.ts
+│   │       └── package.json
+│   ├── risk-import/         # Risk Import plugin
+│   │   ├── index.ts
+│   │   ├── package.json
+│   │   ├── README.md
+│   │   └── ui/
+│   └── slack/               # Slack integration plugin
+│       ├── index.ts
+│       ├── package.json
+│       ├── README.md
+│       └── ui/
+├── docs/                    # Documentation
+│   ├── PLUGIN_DEVELOPMENT_GUIDE.md
+│   ├── PLUGIN_UI_GUIDE.md
+│   ├── ARCHITECTURE.md
+│   └── API_REFERENCE.md
+└── README.md               # This file
 ```
 
-## Contributing a Plugin
+## Quick Start: Creating a New Plugin
 
-1. Fork this repository
-2. Create your plugin in `plugins/your-plugin-name/`
-3. Add your plugin to `registry.json`
-4. Create a zip file: `cd plugins && zip -r your-plugin-name.zip your-plugin-name/`
-5. Submit a pull request
+### 1. Create Plugin Directory
 
-### Registry Entry Format
+```bash
+mkdir -p plugins/my-plugin/ui/src
+```
+
+### 2. Create Backend Plugin (`plugins/my-plugin/index.ts`)
+
+```typescript
+// Required exports
+export async function install(userId: number, tenantId: string, config: any, context: any) {
+  // Create tables, initialize resources
+  return { success: true, message: "Installed", installedAt: new Date().toISOString() };
+}
+
+export async function uninstall(userId: number, tenantId: string, context: any) {
+  // Clean up tables, resources
+  return { success: true, message: "Uninstalled", uninstalledAt: new Date().toISOString() };
+}
+
+export function validateConfig(config: any) {
+  // Validate configuration
+  return { valid: true, errors: [] };
+}
+
+export const metadata = {
+  name: "My Plugin",
+  version: "1.0.0",
+  author: "Your Name",
+  description: "Plugin description"
+};
+```
+
+### 3. Add to Registry (`plugins.json`)
 
 ```json
 {
-  "id": "your-plugin-name",
-  "name": "Your Plugin Name",
-  "description": "Brief description of what your plugin does",
+  "key": "my-plugin",
+  "name": "My Plugin",
+  "displayName": "My Plugin",
+  "description": "Short description",
   "version": "1.0.0",
-  "author": {
-    "name": "Your Name",
-    "url": "https://your-website.com"
-  },
-  "type": "integration|feature|framework|reporting",
-  "tags": ["tag1", "tag2"],
-  "download": "https://raw.githubusercontent.com/bluewave-labs/plugin-marketplace/main/plugins/your-plugin-name.zip",
-  "checksum": "sha256:...",
-  "compatibility": {
-    "minVersion": "1.6.0"
-  },
-  "permissions": ["events:listen", "database:read"]
+  "category": "data_management",
+  "pluginPath": "plugins/my-plugin",
+  "entryPoint": "index.ts",
+  "requiresConfiguration": true,
+  "ui": {
+    "bundleUrl": "/api/plugins/my-plugin/ui/dist/index.esm.js",
+    "globalName": "PluginMyPlugin",
+    "slots": [...]
+  }
 }
 ```
 
+### 4. Build UI (if applicable)
+
+```bash
+cd plugins/my-plugin/ui
+npm install
+npm run build
+```
+
+See [Plugin Development Guide](docs/PLUGIN_DEVELOPMENT_GUIDE.md) for complete instructions.
+
 ## Plugin Types
 
-| Type | Description |
-|------|-------------|
-| `integration` | Connect with external services (Slack, Jira, etc.) |
-| `feature` | Add new functionality (audit trail, analytics) |
-| `framework` | Compliance frameworks (GDPR, ISO 27001, SOC2) |
-| `reporting` | Report generation and export |
+| Type | Description | Example |
+|------|-------------|---------|
+| **Standard** | Simple plugins without database tables | Slack |
+| **Tenant-Scoped** | Plugins with per-tenant database tables | MLflow, Risk Import |
+| **OAuth** | Plugins requiring OAuth authentication | Slack |
+
+## Available Plugin Slots
+
+Plugins can inject UI at these locations:
+
+| Slot ID | Location | Render Types |
+|---------|----------|--------------|
+| `page.risks.actions` | Risk Management "Insert From" menu | `menuitem`, `modal` |
+| `page.models.tabs` | Model Inventory tabs | `tab` |
+| `page.plugin.config` | Plugin configuration panel | `card`, `inline` |
+| `page.dashboard.widgets` | Dashboard (future) | `widget` |
+| `layout.sidebar.items` | Sidebar (future) | `menuitem` |
+
+## Development vs Production
+
+### Development (Local)
+VerifyWise reads from local `plugins.json` and `plugins/` directory.
+
+### Production (Git Repository)
+VerifyWise fetches from remote Git repository:
+
+```bash
+PLUGIN_MARKETPLACE_URL=https://raw.githubusercontent.com/org/plugin-marketplace/main/plugins.json
+```
+
+## Current Plugins
+
+| Plugin | Category | Description |
+|--------|----------|-------------|
+| **Slack** | Communication | Real-time notifications via Slack |
+| **MLflow** | ML Operations | ML model tracking and sync |
+| **Risk Import** | Data Management | Bulk import risks from Excel |
+
+## Contributing
+
+1. Fork this repository
+2. Create plugin in `plugins/` directory
+3. Add entry to `plugins.json`
+4. Submit pull request
+
+See [Plugin Development Guide](docs/PLUGIN_DEVELOPMENT_GUIDE.md) for detailed instructions.
 
 ## License
 
-MIT
+MIT License - See LICENSE file for details.
