@@ -282,6 +282,51 @@ interface PluginMetadata {
 }
 ```
 
+### PluginRouteContext
+
+Context passed to plugin route handlers.
+
+```typescript
+interface PluginRouteContext {
+  tenantId: string;              // Tenant/organization identifier
+  userId: number;                // Authenticated user ID
+  organizationId: number;        // Organization ID
+  method: string;                // HTTP method (GET, POST, PUT, PATCH, DELETE)
+  path: string;                  // Route path after /api/plugins/:key/
+  params: Record<string, string>; // URL params (e.g., { modelId: "123" })
+  query: Record<string, any>;    // Query string parameters
+  body: any;                     // Request body (parsed JSON)
+  sequelize: any;                // Sequelize database instance
+  configuration: Record<string, any>; // Plugin's saved configuration
+}
+```
+
+### PluginRouteResponse
+
+Response format returned by plugin route handlers.
+
+```typescript
+interface PluginRouteResponse {
+  status?: number;           // HTTP status code (default: 200)
+  data?: any;                // JSON response data
+  buffer?: any;              // Binary data for file downloads
+  filename?: string;         // Filename for Content-Disposition header
+  contentType?: string;      // Custom content type (e.g., "text/csv")
+  headers?: Record<string, string>; // Additional response headers
+}
+```
+
+### PluginRouter
+
+Type for the plugin's router export.
+
+```typescript
+type PluginRouter = Record<
+  string, // Route pattern: "METHOD /path" (e.g., "GET /models", "POST /sync")
+  (ctx: PluginRouteContext) => Promise<PluginRouteResponse>
+>;
+```
+
 ---
 
 ## Backend APIs
@@ -497,6 +542,102 @@ Serve plugin UI bundle.
 **Response:**
 - Content-Type: `application/javascript`
 - Body: JavaScript bundle file
+
+---
+
+### Generic Plugin Router
+
+#### ALL /api/plugins/:key/*
+
+All plugin-specific endpoints are handled via a generic router. Plugins define their own routes via the `router` export.
+
+**How it works:**
+1. Request comes to `/api/plugins/:key/*` (e.g., `/api/plugins/mlflow/models`)
+2. Backend loads the plugin's `router` export
+3. Matches the request method + path to a handler
+4. Executes the handler with a `PluginRouteContext`
+5. Returns the `PluginRouteResponse`
+
+**Examples:**
+
+| Request | Plugin Route Handler |
+|---------|---------------------|
+| `GET /api/plugins/mlflow/models` | `"GET /models"` |
+| `POST /api/plugins/mlflow/sync` | `"POST /sync"` |
+| `GET /api/plugins/mlflow/models/123` | `"GET /models/:modelId"` (params.modelId = "123") |
+| `GET /api/plugins/slack/oauth/workspaces` | `"GET /oauth/workspaces"` |
+| `DELETE /api/plugins/slack/oauth/workspaces/456` | `"DELETE /oauth/workspaces/:webhookId"` |
+| `GET /api/plugins/risk-import/template` | `"GET /template"` |
+| `POST /api/plugins/risk-import/import` | `"POST /import"` |
+
+**Plugin Router Export:**
+
+```typescript
+// In your plugin's index.ts
+export const router: Record<string, (ctx: PluginRouteContext) => Promise<PluginRouteResponse>> = {
+  "GET /models": handleGetModels,
+  "POST /sync": handleSyncModels,
+  "GET /models/:modelId": handleGetModelById,
+};
+```
+
+**PluginRouteContext:**
+
+```typescript
+interface PluginRouteContext {
+  tenantId: string;              // Tenant identifier
+  userId: number;                // Authenticated user ID
+  organizationId: number;        // Organization ID
+  method: string;                // HTTP method (GET, POST, etc.)
+  path: string;                  // Route path (/models, /sync, etc.)
+  params: Record<string, string>; // URL params (:modelId, etc.)
+  query: Record<string, any>;    // Query string params
+  body: any;                     // Request body
+  sequelize: any;                // Database connection
+  configuration: Record<string, any>; // Plugin configuration
+}
+```
+
+**PluginRouteResponse:**
+
+```typescript
+interface PluginRouteResponse {
+  status?: number;           // HTTP status code (default 200)
+  data?: any;                // JSON response data
+  buffer?: any;              // Binary data for file downloads
+  filename?: string;         // Filename for Content-Disposition
+  contentType?: string;      // Custom content type
+  headers?: Record<string, string>; // Additional headers
+}
+```
+
+**Response Examples:**
+
+JSON Response:
+```typescript
+return {
+  status: 200,
+  data: { models: [...] }
+};
+```
+
+File Download:
+```typescript
+return {
+  status: 200,
+  buffer: excelBuffer,
+  filename: "template.xlsx",
+  contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+};
+```
+
+Error Response:
+```typescript
+return {
+  status: 404,
+  data: { message: "Resource not found" }
+};
+```
 
 ---
 
