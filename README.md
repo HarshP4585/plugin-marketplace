@@ -25,6 +25,11 @@ plugin-marketplace/
 │   │       ├── src/         # React components
 │   │       ├── vite.config.ts
 │   │       └── package.json
+│   ├── azure-ai-foundry/    # Azure AI Foundry plugin
+│   │   ├── index.ts
+│   │   ├── package.json
+│   │   ├── README.md
+│   │   └── ui/
 │   ├── risk-import/         # Risk Import plugin
 │   │   ├── index.ts
 │   │   ├── package.json
@@ -54,6 +59,29 @@ mkdir -p plugins/my-plugin/ui/src
 ### 2. Create Backend Plugin (`plugins/my-plugin/index.ts`)
 
 ```typescript
+// Types for plugin routing
+interface PluginRouteContext {
+  tenantId: string;
+  userId: number;
+  organizationId: number;
+  method: string;
+  path: string;
+  params: Record<string, string>;
+  query: Record<string, any>;
+  body: any;
+  sequelize: any;
+  configuration: Record<string, any>;
+}
+
+interface PluginRouteResponse {
+  status?: number;
+  data?: any;
+  buffer?: any;      // For binary data (files)
+  filename?: string;
+  contentType?: string;
+  headers?: Record<string, string>;
+}
+
 // Required exports
 export async function install(userId: number, tenantId: string, config: any, context: any) {
   // Create tables, initialize resources
@@ -75,6 +103,22 @@ export const metadata = {
   version: "1.0.0",
   author: "Your Name",
   description: "Plugin description"
+};
+
+// Plugin Router - Define custom API endpoints
+export const router: Record<string, (ctx: PluginRouteContext) => Promise<PluginRouteResponse>> = {
+  "GET /items": async (ctx) => {
+    // Handle GET /api/plugins/my-plugin/items
+    return { data: { items: [] } };
+  },
+  "POST /items": async (ctx) => {
+    // Handle POST /api/plugins/my-plugin/items
+    return { status: 201, data: { created: true } };
+  },
+  "GET /items/:itemId": async (ctx) => {
+    // ctx.params.itemId contains the URL parameter
+    return { data: { id: ctx.params.itemId } };
+  },
 };
 ```
 
@@ -117,6 +161,62 @@ See [Plugin Development Guide](docs/PLUGIN_DEVELOPMENT_GUIDE.md) for complete in
 | **Tenant-Scoped** | Plugins with per-tenant database tables | MLflow, Risk Import |
 | **OAuth** | Plugins requiring OAuth authentication | Slack |
 
+## Plugin Router System
+
+Plugins can define custom API endpoints via the `router` export. All requests to `/api/plugins/:pluginKey/*` are automatically forwarded to the plugin's router.
+
+### Route Pattern Format
+
+Routes are defined as `"METHOD /path"` keys:
+
+```typescript
+export const router = {
+  "GET /models": handleGetModels,           // GET /api/plugins/my-plugin/models
+  "POST /sync": handleSync,                 // POST /api/plugins/my-plugin/sync
+  "GET /models/:modelId": handleGetModel,   // GET /api/plugins/my-plugin/models/123
+  "DELETE /items/:id": handleDelete,        // DELETE /api/plugins/my-plugin/items/456
+};
+```
+
+### Route Context
+
+Each handler receives a `PluginRouteContext` with:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `tenantId` | string | Current tenant identifier |
+| `userId` | number | Authenticated user ID |
+| `organizationId` | number | User's organization ID |
+| `method` | string | HTTP method (GET, POST, etc.) |
+| `path` | string | Request path after plugin key |
+| `params` | object | URL parameters (e.g., `:modelId`) |
+| `query` | object | Query string parameters |
+| `body` | any | Request body (for POST/PUT/PATCH) |
+| `sequelize` | any | Database connection |
+| `configuration` | object | Plugin's stored configuration |
+
+### Response Types
+
+Handlers return a `PluginRouteResponse`:
+
+```typescript
+// JSON response
+return { data: { items: [...] } };
+
+// Custom status code
+return { status: 201, data: { created: true } };
+
+// File download
+return {
+  buffer: fileBuffer,
+  filename: "export.xlsx",
+  contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+};
+
+// Custom headers
+return { data: {...}, headers: { "X-Custom": "value" } };
+```
+
 ## Available Plugin Slots
 
 Plugins can inject UI at these locations:
@@ -147,6 +247,7 @@ PLUGIN_MARKETPLACE_URL=https://raw.githubusercontent.com/org/plugin-marketplace/
 |--------|----------|-------------|
 | **Slack** | Communication | Real-time notifications via Slack |
 | **MLflow** | ML Operations | ML model tracking and sync |
+| **Azure AI Foundry** | ML Operations | Azure ML model tracking and sync |
 | **Risk Import** | Data Management | Bulk import risks from Excel |
 
 ## Contributing

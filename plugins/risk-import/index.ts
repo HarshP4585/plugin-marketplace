@@ -6,12 +6,41 @@
  * fill it with risk data, and upload it to create multiple risks at once.
  */
 
+// @ts-ignore - exceljs types may not be available in all environments
 import * as ExcelJS from "exceljs";
 
 // ========== TYPE DEFINITIONS ==========
 
 interface PluginContext {
   sequelize: any;
+}
+
+/**
+ * Context passed to plugin route handlers from the backend
+ */
+interface PluginRouteContext {
+  tenantId: string;
+  userId: number;
+  organizationId: number;
+  method: string;
+  path: string;
+  params: Record<string, string>;
+  query: Record<string, any>;
+  body: any;
+  sequelize: any;
+  configuration: Record<string, any>;
+}
+
+/**
+ * Response format for plugin route handlers
+ */
+interface PluginRouteResponse {
+  status?: number;
+  data?: any;
+  buffer?: any; // Buffer for binary data
+  filename?: string;
+  contentType?: string;
+  headers?: Record<string, string>;
 }
 
 interface PluginMetadata {
@@ -781,4 +810,68 @@ export const metadata: PluginMetadata = {
   version: "1.0.0",
   author: "VerifyWise",
   description: "Import risks from CSV files",
+};
+
+// ========== PLUGIN ROUTER ==========
+// Defines routes that can be called via the generic plugin API
+// Route format: "METHOD /path" -> handler function
+
+/**
+ * GET /template - Get Excel template for risk import
+ */
+async function handleGetTemplate(ctx: PluginRouteContext): Promise<PluginRouteResponse> {
+  const { sequelize, organizationId } = ctx;
+
+  try {
+    const result = await getExcelTemplate(String(organizationId), { sequelize });
+
+    return {
+      status: 200,
+      buffer: result.buffer as any, // Buffer for binary data
+      filename: result.filename,
+      contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    };
+  } catch (error: any) {
+    return {
+      status: 500,
+      data: { message: `Failed to generate template: ${error.message}` },
+    };
+  }
+}
+
+/**
+ * POST /import - Import risks from CSV/Excel data
+ */
+async function handleImportRisks(ctx: PluginRouteContext): Promise<PluginRouteResponse> {
+  const { sequelize, tenantId, body } = ctx;
+  const { csvData } = body;
+
+  if (!csvData || !Array.isArray(csvData)) {
+    return {
+      status: 400,
+      data: { message: "CSV data is required and must be an array" },
+    };
+  }
+
+  try {
+    const result = await importRisks(csvData, tenantId, { sequelize });
+
+    return {
+      status: 200,
+      data: result,
+    };
+  } catch (error: any) {
+    return {
+      status: 500,
+      data: { message: `Import failed: ${error.message}` },
+    };
+  }
+}
+
+/**
+ * Plugin router - maps routes to handler functions
+ */
+export const router: Record<string, (ctx: PluginRouteContext) => Promise<PluginRouteResponse>> = {
+  "GET /template": handleGetTemplate,
+  "POST /import": handleImportRisks,
 };

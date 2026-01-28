@@ -16,6 +16,34 @@ interface PluginContext {
   sequelize: any;
 }
 
+/**
+ * Context passed to plugin route handlers from the backend
+ */
+interface PluginRouteContext {
+  tenantId: string;
+  userId: number;
+  organizationId: number;
+  method: string;
+  path: string;
+  params: Record<string, string>;
+  query: Record<string, any>;
+  body: any;
+  sequelize: any;
+  configuration: Record<string, any>;
+}
+
+/**
+ * Response format for plugin route handlers
+ */
+interface PluginRouteResponse {
+  status?: number;
+  data?: any;
+  buffer?: any; // Buffer for binary data
+  filename?: string;
+  contentType?: string;
+  headers?: Record<string, string>;
+}
+
 interface PluginMetadata {
   name: string;
   version: string;
@@ -620,4 +648,110 @@ export const metadata: PluginMetadata = {
   version: "1.0.0",
   author: "VerifyWise",
   description: "MLflow integration for ML model tracking",
+};
+
+// ========== PLUGIN ROUTER ==========
+// Defines routes that can be called via the generic plugin API
+// Route format: "METHOD /path" -> handler function
+// The backend forwards requests to these handlers via POST /api/plugins/:key/api/*
+
+/**
+ * GET /models - Get all synced MLflow models
+ */
+async function handleGetModels(ctx: PluginRouteContext): Promise<PluginRouteResponse> {
+  const { sequelize, tenantId } = ctx;
+
+  try {
+    // Query mlflow_model_records table
+    const models = await sequelize.query(
+      `SELECT * FROM "${tenantId}".mlflow_model_records ORDER BY created_at DESC`,
+      { type: sequelize.QueryTypes?.SELECT || "SELECT" }
+    );
+
+    return {
+      status: 200,
+      data: {
+        configured: true,
+        models: models || [],
+      },
+    };
+  } catch (error: any) {
+    // If table doesn't exist, plugin may not be properly installed
+    if (error.message?.includes("does not exist")) {
+      return {
+        status: 200,
+        data: {
+          configured: false,
+          models: [],
+        },
+      };
+    }
+    throw error;
+  }
+}
+
+/**
+ * POST /sync - Sync models from MLflow tracking server
+ */
+async function handleSyncModels(ctx: PluginRouteContext): Promise<PluginRouteResponse> {
+  const { sequelize, tenantId, configuration } = ctx;
+
+  if (!configuration || !configuration.tracking_server_url) {
+    return {
+      status: 400,
+      data: {
+        success: false,
+        message: "MLflow plugin is not configured. Please configure the tracking server URL.",
+      },
+    };
+  }
+
+  const result = await syncModels(tenantId, configuration as MLflowConfig, { sequelize });
+
+  return {
+    status: result.success ? 200 : 500,
+    data: result,
+  };
+}
+
+/**
+ * GET /models/:modelId - Get a specific model by ID
+ */
+async function handleGetModelById(ctx: PluginRouteContext): Promise<PluginRouteResponse> {
+  const { sequelize, tenantId, params } = ctx;
+  const modelId = params.modelId;
+
+  try {
+    const models = await sequelize.query(
+      `SELECT * FROM "${tenantId}".mlflow_model_records WHERE id = :modelId`,
+      {
+        replacements: { modelId },
+        type: sequelize.QueryTypes?.SELECT || "SELECT",
+      }
+    );
+
+    if (!models || models.length === 0) {
+      return {
+        status: 404,
+        data: { message: "Model not found" },
+      };
+    }
+
+    return {
+      status: 200,
+      data: models[0],
+    };
+  } catch (error: any) {
+    throw error;
+  }
+}
+
+/**
+ * Plugin router - maps routes to handler functions
+ * The backend will match incoming requests to these patterns
+ */
+export const router: Record<string, (ctx: PluginRouteContext) => Promise<PluginRouteResponse>> = {
+  "GET /models": handleGetModels,
+  "POST /sync": handleSyncModels,
+  "GET /models/:modelId": handleGetModelById,
 };

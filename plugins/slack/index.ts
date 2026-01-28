@@ -16,6 +16,34 @@ interface PluginContext {
   sequelize: any;
 }
 
+/**
+ * Context passed to plugin route handlers from the backend
+ */
+interface PluginRouteContext {
+  tenantId: string;
+  userId: number;
+  organizationId: number;
+  method: string;
+  path: string;
+  params: Record<string, string>;
+  query: Record<string, any>;
+  body: any;
+  sequelize: any;
+  configuration: Record<string, any>;
+}
+
+/**
+ * Response format for plugin route handlers
+ */
+interface PluginRouteResponse {
+  status?: number;
+  data?: any;
+  buffer?: any; // Buffer for binary data
+  filename?: string;
+  contentType?: string;
+  headers?: Record<string, string>;
+}
+
 interface PluginMetadata {
   name: string;
   version: string;
@@ -541,4 +569,300 @@ export const metadata: PluginMetadata = {
   version: "1.0.0",
   author: "VerifyWise",
   description: "Slack integration for real-time notifications",
+};
+
+// ========== PLUGIN ROUTER ==========
+// Defines routes that can be called via the generic plugin API
+// Route format: "METHOD /path" -> handler function
+
+/**
+ * POST /oauth/connect - Connect OAuth workspace
+ * Exchanges Slack OAuth code for access token and stores the webhook
+ */
+async function handleOAuthConnect(ctx: PluginRouteContext): Promise<PluginRouteResponse> {
+  const { sequelize, userId, body } = ctx;
+  const { code } = body;
+
+  if (!code) {
+    return {
+      status: 400,
+      data: { message: "OAuth code is required" },
+    };
+  }
+
+  try {
+    // Validate OAuth code with Slack API
+    const slackData = await validateSlackOAuth(code);
+
+    // Create slack_webhooks entry
+    const result: any = await sequelize.query(
+      `INSERT INTO public.slack_webhooks
+       (access_token, scope, team_name, team_id, channel, channel_id,
+        configuration_url, url, user_id, is_active, created_at, updated_at)
+       VALUES (:access_token, :scope, :team_name, :team_id, :channel, :channel_id,
+               :configuration_url, :url, :user_id, :is_active, NOW(), NOW())
+       RETURNING *`,
+      {
+        replacements: {
+          access_token: Buffer.from(slackData.access_token).toString('base64'),
+          scope: slackData.scope,
+          team_name: slackData.team.name,
+          team_id: slackData.team.id,
+          channel: slackData.incoming_webhook.channel,
+          channel_id: slackData.incoming_webhook.channel_id,
+          configuration_url: slackData.incoming_webhook.configuration_url,
+          url: Buffer.from(slackData.incoming_webhook.url).toString('base64'),
+          user_id: userId,
+          is_active: true,
+        },
+      }
+    );
+
+    // Invite bot to channel
+    if (slackData.authed_user && slackData.bot_user_id) {
+      try {
+        await inviteBotToChannel(
+          slackData.authed_user.access_token,
+          slackData.incoming_webhook.channel_id,
+          slackData.bot_user_id
+        );
+      } catch (error) {
+        console.warn('[Slack Plugin] Failed to invite bot to channel:', error);
+      }
+    }
+
+    const webhook = result[0][0];
+    return {
+      status: 201,
+      data: {
+        id: webhook.id,
+        team_name: webhook.team_name,
+        channel: webhook.channel,
+        is_active: webhook.is_active,
+        routing_type: webhook.routing_type || [],
+      },
+    };
+  } catch (error: any) {
+    return {
+      status: 500,
+      data: { message: `OAuth connection failed: ${error.message}` },
+    };
+  }
+}
+
+/**
+ * GET /oauth/workspaces - Get connected OAuth workspaces
+ */
+async function handleGetWorkspaces(ctx: PluginRouteContext): Promise<PluginRouteResponse> {
+  const { sequelize, userId } = ctx;
+
+  try {
+    const result: any = await sequelize.query(
+      `SELECT id, team_name, channel, channel_id, is_active, routing_type, created_at
+       FROM public.slack_webhooks
+       WHERE user_id = :userId
+       ORDER BY created_at DESC`,
+      { replacements: { userId } }
+    );
+
+    const workspaces = result[0].map((row: any) => ({
+      id: row.id,
+      team_name: row.team_name,
+      channel: row.channel,
+      channel_id: row.channel_id,
+      is_active: row.is_active,
+      routing_type: row.routing_type || [],
+      created_at: row.created_at,
+    }));
+
+    return {
+      status: 200,
+      data: workspaces,
+    };
+  } catch (error: any) {
+    return {
+      status: 500,
+      data: { message: `Failed to fetch workspaces: ${error.message}` },
+    };
+  }
+}
+
+/**
+ * PATCH /oauth/workspaces/:webhookId - Update OAuth workspace settings
+ */
+async function handleUpdateWorkspace(ctx: PluginRouteContext): Promise<PluginRouteResponse> {
+  const { sequelize, userId, params, body } = ctx;
+  const webhookId = parseInt(params.webhookId);
+  const { routing_type, is_active } = body;
+
+  try {
+    // Verify webhook belongs to user
+    const checkResult: any = await sequelize.query(
+      `SELECT id FROM public.slack_webhooks WHERE id = :webhookId AND user_id = :userId`,
+      { replacements: { webhookId, userId } }
+    );
+
+    if (!checkResult[0] || checkResult[0].length === 0) {
+      return {
+        status: 404,
+        data: { message: "Webhook not found or unauthorized" },
+      };
+    }
+
+    // Build update query dynamically
+    const updates: string[] = [];
+    const replacements: any = { webhookId, userId };
+
+    if (routing_type !== undefined) {
+      const routingTypeArray = `{${routing_type.map((t: string) => `"${t}"`).join(',')}}`;
+      updates.push("routing_type = :routing_type");
+      replacements.routing_type = routingTypeArray;
+    }
+
+    if (is_active !== undefined) {
+      updates.push("is_active = :is_active");
+      replacements.is_active = is_active;
+    }
+
+    if (updates.length === 0) {
+      return {
+        status: 400,
+        data: { message: "No update data provided" },
+      };
+    }
+
+    updates.push("updated_at = NOW()");
+
+    const result: any = await sequelize.query(
+      `UPDATE public.slack_webhooks
+       SET ${updates.join(", ")}
+       WHERE id = :webhookId AND user_id = :userId
+       RETURNING id, team_name, channel, is_active, routing_type`,
+      { replacements }
+    );
+
+    const webhook = result[0][0];
+    return {
+      status: 200,
+      data: {
+        id: webhook.id,
+        team_name: webhook.team_name,
+        channel: webhook.channel,
+        is_active: webhook.is_active,
+        routing_type: webhook.routing_type || [],
+      },
+    };
+  } catch (error: any) {
+    return {
+      status: 500,
+      data: { message: `Failed to update workspace: ${error.message}` },
+    };
+  }
+}
+
+/**
+ * DELETE /oauth/workspaces/:webhookId - Disconnect OAuth workspace
+ */
+async function handleDisconnectWorkspace(ctx: PluginRouteContext): Promise<PluginRouteResponse> {
+  const { sequelize, userId, params } = ctx;
+  const webhookId = parseInt(params.webhookId);
+
+  try {
+    // Verify webhook belongs to user
+    const checkResult: any = await sequelize.query(
+      `SELECT id FROM public.slack_webhooks WHERE id = :webhookId AND user_id = :userId`,
+      { replacements: { webhookId, userId } }
+    );
+
+    if (!checkResult[0] || checkResult[0].length === 0) {
+      return {
+        status: 404,
+        data: { message: "Webhook not found or unauthorized" },
+      };
+    }
+
+    // Delete webhook
+    await sequelize.query(
+      `DELETE FROM public.slack_webhooks WHERE id = :webhookId AND user_id = :userId`,
+      { replacements: { webhookId, userId } }
+    );
+
+    return {
+      status: 200,
+      data: { message: "Workspace disconnected successfully" },
+    };
+  } catch (error: any) {
+    return {
+      status: 500,
+      data: { message: `Failed to disconnect workspace: ${error.message}` },
+    };
+  }
+}
+
+// ========== OAUTH HELPER FUNCTIONS ==========
+
+/**
+ * Validate Slack OAuth code and exchange for access token
+ */
+async function validateSlackOAuth(code: string): Promise<any> {
+  const url = process.env.SLACK_API_URL || "https://slack.com/api/oauth.v2.access";
+  const searchParams = {
+    client_id: process.env.SLACK_CLIENT_ID || "",
+    client_secret: process.env.SLACK_CLIENT_SECRET || "",
+    code: code,
+    redirect_uri: `${process.env.FRONTEND_URL}/plugins/slack/manage`,
+  };
+
+  const tokenResponse = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams(searchParams),
+  });
+
+  const data = await tokenResponse.json();
+
+  if (data.ok) {
+    return data;
+  } else {
+    throw new Error(data.error || "Slack OAuth failed");
+  }
+}
+
+/**
+ * Invite bot to Slack channel
+ */
+async function inviteBotToChannel(
+  userAccessToken: string,
+  channelId: string,
+  botUserId: string
+): Promise<void> {
+  const response = await fetch("https://slack.com/api/conversations.invite", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${userAccessToken}`,
+    },
+    body: JSON.stringify({
+      channel: channelId,
+      users: botUserId,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!data.ok && data.error !== "already_in_channel") {
+    console.warn(`[Slack Plugin] Failed to invite bot to channel: ${data.error}`);
+  }
+}
+
+/**
+ * Plugin router - maps routes to handler functions
+ */
+export const router: Record<string, (ctx: PluginRouteContext) => Promise<PluginRouteResponse>> = {
+  "POST /oauth/connect": handleOAuthConnect,
+  "GET /oauth/workspaces": handleGetWorkspaces,
+  "PATCH /oauth/workspaces/:webhookId": handleUpdateWorkspace,
+  "DELETE /oauth/workspaces/:webhookId": handleDisconnectWorkspace,
 };

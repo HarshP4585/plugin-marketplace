@@ -343,6 +343,174 @@ export async function testConnection(
 }
 ```
 
+### Plugin Router (Custom API Endpoints)
+
+Plugins can define their own API endpoints via the `router` export. The backend forwards requests to the appropriate handler based on the route pattern.
+
+```typescript
+// ========== ROUTE HANDLER TYPES ==========
+
+/**
+ * Context passed to route handlers
+ */
+interface PluginRouteContext {
+  tenantId: string;
+  userId: number;
+  organizationId: number;
+  method: string;           // HTTP method (GET, POST, PUT, PATCH, DELETE)
+  path: string;             // Route path after /api/plugins/:key/
+  params: Record<string, string>;  // URL params (e.g., { modelId: "123" })
+  query: Record<string, any>;      // Query string params
+  body: any;                       // Request body
+  sequelize: any;                  // Database connection
+  configuration: Record<string, any>; // Plugin configuration
+}
+
+/**
+ * Response format for route handlers
+ */
+interface PluginRouteResponse {
+  status?: number;           // HTTP status code (default 200)
+  data?: any;                // JSON response data
+  buffer?: any;              // Binary data for file downloads
+  filename?: string;         // Filename for Content-Disposition header
+  contentType?: string;      // Custom content type
+  headers?: Record<string, string>; // Additional response headers
+}
+
+// ========== ROUTE HANDLERS ==========
+
+/**
+ * GET /items - List all items
+ */
+async function handleGetItems(ctx: PluginRouteContext): Promise<PluginRouteResponse> {
+  const { sequelize, tenantId } = ctx;
+
+  const items = await sequelize.query(
+    `SELECT * FROM "${tenantId}".my_plugin_data ORDER BY created_at DESC`,
+    { type: "SELECT" }
+  );
+
+  return {
+    status: 200,
+    data: { items },
+  };
+}
+
+/**
+ * GET /items/:itemId - Get single item
+ */
+async function handleGetItemById(ctx: PluginRouteContext): Promise<PluginRouteResponse> {
+  const { sequelize, tenantId, params } = ctx;
+  const itemId = params.itemId;
+
+  const items = await sequelize.query(
+    `SELECT * FROM "${tenantId}".my_plugin_data WHERE id = :itemId`,
+    { replacements: { itemId }, type: "SELECT" }
+  );
+
+  if (!items || items.length === 0) {
+    return { status: 404, data: { message: "Item not found" } };
+  }
+
+  return { status: 200, data: items[0] };
+}
+
+/**
+ * POST /items - Create new item
+ */
+async function handleCreateItem(ctx: PluginRouteContext): Promise<PluginRouteResponse> {
+  const { sequelize, tenantId, body } = ctx;
+  const { name, data } = body;
+
+  if (!name) {
+    return { status: 400, data: { message: "Name is required" } };
+  }
+
+  const result = await sequelize.query(
+    `INSERT INTO "${tenantId}".my_plugin_data (name, data) VALUES (:name, :data) RETURNING *`,
+    { replacements: { name, data: JSON.stringify(data || {}) } }
+  );
+
+  return { status: 201, data: result[0][0] };
+}
+
+/**
+ * DELETE /items/:itemId - Delete item
+ */
+async function handleDeleteItem(ctx: PluginRouteContext): Promise<PluginRouteResponse> {
+  const { sequelize, tenantId, params } = ctx;
+  const itemId = params.itemId;
+
+  await sequelize.query(
+    `DELETE FROM "${tenantId}".my_plugin_data WHERE id = :itemId`,
+    { replacements: { itemId } }
+  );
+
+  return { status: 200, data: { message: "Item deleted" } };
+}
+
+/**
+ * GET /export - Download data as file
+ */
+async function handleExport(ctx: PluginRouteContext): Promise<PluginRouteResponse> {
+  const { sequelize, tenantId } = ctx;
+
+  const items = await sequelize.query(
+    `SELECT * FROM "${tenantId}".my_plugin_data`,
+    { type: "SELECT" }
+  );
+
+  const csvContent = "id,name,data\n" + items.map((i: any) =>
+    `${i.id},${i.name},${JSON.stringify(i.data)}`
+  ).join("\n");
+
+  return {
+    status: 200,
+    buffer: Buffer.from(csvContent),
+    filename: "export.csv",
+    contentType: "text/csv",
+  };
+}
+
+// ========== PLUGIN ROUTER ==========
+
+/**
+ * Router maps route patterns to handler functions
+ * Format: "METHOD /path" -> handler function
+ *
+ * Examples:
+ *   "GET /items"           -> GET  /api/plugins/my-plugin/items
+ *   "GET /items/:itemId"   -> GET  /api/plugins/my-plugin/items/123
+ *   "POST /items"          -> POST /api/plugins/my-plugin/items
+ *   "DELETE /items/:itemId" -> DELETE /api/plugins/my-plugin/items/123
+ */
+export const router: Record<string, (ctx: PluginRouteContext) => Promise<PluginRouteResponse>> = {
+  "GET /items": handleGetItems,
+  "GET /items/:itemId": handleGetItemById,
+  "POST /items": handleCreateItem,
+  "DELETE /items/:itemId": handleDeleteItem,
+  "GET /export": handleExport,
+};
+```
+
+**Route Pattern Matching:**
+
+| Pattern | Matches | Example |
+|---------|---------|---------|
+| `GET /items` | Exact match | `GET /api/plugins/my-plugin/items` |
+| `GET /items/:itemId` | With param | `GET /api/plugins/my-plugin/items/123` → `params.itemId = "123"` |
+| `POST /oauth/connect` | Nested path | `POST /api/plugins/my-plugin/oauth/connect` |
+| `DELETE /items/:id/tags/:tagId` | Multiple params | `params = { id: "1", tagId: "2" }` |
+
+**Response Types:**
+
+| Type | Fields | Example Use |
+|------|--------|-------------|
+| JSON | `data` | API responses |
+| File download | `buffer`, `filename`, `contentType` | Excel/CSV export |
+| Custom headers | `headers` | CORS, caching |
+
 ### Package.json for Backend
 
 ```json
