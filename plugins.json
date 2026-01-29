@@ -324,6 +324,15 @@
         "globalName": "PluginCustomFrameworkImport",
         "slots": [
           {
+            "slotId": "page.settings.tabs",
+            "componentName": "CustomFrameworkConfig",
+            "renderType": "tab",
+            "props": {
+              "label": "Custom Frameworks",
+              "icon": "FileJson"
+            }
+          },
+          {
             "slotId": "page.plugin.config",
             "componentName": "CustomFrameworkConfig",
             "renderType": "card"
