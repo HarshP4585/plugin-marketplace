@@ -279,7 +279,7 @@
       "supportUrl": "https://support.verifywise.com",
       "isOfficial": true,
       "isPublished": true,
-      "requiresConfiguration": true,
+      "requiresConfiguration": false,
       "installationType": "tenant_scoped",
       "features": [
         {
@@ -331,11 +331,6 @@
               "label": "Custom Frameworks",
               "icon": "FileJson"
             }
-          },
-          {
-            "slotId": "page.plugin.config",
-            "componentName": "CustomFrameworkConfig",
-            "renderType": "card"
           },
           {
             "slotId": "modal.framework.selection",
