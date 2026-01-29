@@ -8,9 +8,6 @@ import {
   Chip,
   LinearProgress,
   Grid,
-  Paper,
-  Card,
-  CardContent,
   CircularProgress,
   Alert,
   Button,
@@ -18,19 +15,13 @@ import {
   Tooltip,
 } from "@mui/material";
 import {
-  ChevronDown,
-  Clock,
-  User,
-  FileText,
-  Link as LinkIcon,
+  ChevronUp,
   RefreshCw,
 } from "lucide-react";
 import {
   colors,
-  textColors,
   statusColors,
   StatusType,
-  theme,
 } from "./theme";
 import { ControlItemDrawer } from "./ControlItemDrawer";
 
@@ -136,7 +127,7 @@ export const CustomFrameworkViewer: React.FC<CustomFrameworkViewerProps> = ({
   const [progress, setProgress] = useState<ProgressData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [expandedLevel1, setExpandedLevel1] = useState<number | null>(null);
+  const [expandedLevel1, setExpandedLevel1] = useState<number | null>(0);
 
   // Drawer state
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -269,7 +260,7 @@ export const CustomFrameworkViewer: React.FC<CustomFrameworkViewerProps> = ({
 
   const getStatusColor = (status: string): string => {
     const statusConfig = statusColors[status as StatusType];
-    return statusConfig?.color || "#94a3b8";
+    return statusConfig?.color || "#9CA3AF";
   };
 
   const getStatusBg = (status: string): string => {
@@ -277,23 +268,23 @@ export const CustomFrameworkViewer: React.FC<CustomFrameworkViewerProps> = ({
     return statusConfig?.bg || "#f1f5f9";
   };
 
-  const calculateLevel1Progress = (items: Level2Item[]): number => {
-    if (!items || items.length === 0) return 0;
+  const calculateLevel1Progress = (items: Level2Item[]): { completed: number; total: number; percentage: number } => {
+    if (!items || items.length === 0) return { completed: 0, total: 0, percentage: 0 };
     const completed = items.filter((i) => i.status === "Implemented").length;
-    return Math.round((completed / items.length) * 100);
+    const total = items.length;
+    return { completed, total, percentage: Math.round((completed / total) * 100) };
   };
 
-  const formatUserName = (item: Level2Item): string | null => {
-    if (item.owner_name && item.owner_surname) {
-      return `${item.owner_name} ${item.owner_surname}`;
-    }
-    return null;
+  const getProgressColor = (percentage: number): string => {
+    if (percentage >= 100) return "#13715B";
+    if (percentage >= 50) return "#13715B";
+    return "#13715B";
   };
 
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", py: 8 }}>
-        <CircularProgress />
+        <CircularProgress sx={{ color: colors.primary }} />
       </Box>
     );
   }
@@ -320,121 +311,143 @@ export const CustomFrameworkViewer: React.FC<CustomFrameworkViewerProps> = ({
   return (
     <Box>
       {/* Header */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 3 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1 }}>
         <Box>
-          <Typography variant="h5" fontWeight={600}>
+          <Typography sx={{ fontSize: "16px", fontWeight: 600, color: "#1A1919" }}>
             {data.name || frameworkName}
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+          <Typography sx={{ fontSize: "13px", color: "#666666", mt: 0.5 }}>
             {data.description}
           </Typography>
         </Box>
         <Tooltip title="Refresh">
-          <IconButton onClick={handleRefresh} size="small">
+          <IconButton onClick={handleRefresh} size="small" sx={{ color: "#666666" }}>
             <RefreshCw size={18} />
           </IconButton>
         </Tooltip>
       </Box>
 
-      {/* Progress Summary */}
+      {/* Progress Summary Card */}
       {progress && progress.overall && progress.level2 && (
-        <Card sx={{ mb: 3 }}>
-          <CardContent>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
-                <Box sx={{ textAlign: "center" }}>
-                  <Typography variant="caption" color="text.secondary" display="block">
-                    Overall Progress
-                  </Typography>
-                  <Box sx={{ position: "relative", display: "inline-flex", my: 1 }}>
-                    <CircularProgress
-                      variant="determinate"
-                      value={progress.overall.percentage ?? 0}
-                      size={80}
-                      thickness={4}
-                      sx={{ color: colors.primary }}
-                    />
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        bottom: 0,
-                        right: 0,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Typography variant="h6" fontWeight={600}>
-                        {progress.overall.percentage ?? 0}%
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <Typography variant="body2" color="text.secondary">
-                    {progress.overall.completed ?? 0} / {progress.overall.total ?? 0} completed
-                  </Typography>
+        <Box
+          sx={{
+            border: "1px solid #E5E7EB",
+            borderRadius: "4px",
+            p: 2.5,
+            mb: 3,
+            mt: 2,
+          }}
+        >
+          <Box sx={{ display: "flex", gap: 6, alignItems: "flex-start" }}>
+            {/* Overall Progress */}
+            <Box>
+              <Typography sx={{ fontSize: "12px", color: "#666666", mb: 1 }}>
+                Overall Progress
+              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Box sx={{ position: "relative", display: "inline-flex" }}>
+                  <CircularProgress
+                    variant="determinate"
+                    value={100}
+                    size={50}
+                    thickness={4}
+                    sx={{ color: "#F3F4F6" }}
+                  />
+                  <CircularProgress
+                    variant="determinate"
+                    value={progress.overall.percentage ?? 0}
+                    size={50}
+                    thickness={4}
+                    sx={{
+                      color: colors.primary,
+                      position: "absolute",
+                      left: 0,
+                    }}
+                  />
                 </Box>
-              </Grid>
+                <Typography sx={{ fontSize: "24px", fontWeight: 600, color: "#1A1919" }}>
+                  {progress.overall.percentage ?? 0}%
+                </Typography>
+              </Box>
+            </Box>
 
-              <Grid item xs={12} md={4}>
-                <Box sx={{ textAlign: "center" }}>
-                  <Typography variant="caption" color="text.secondary" display="block">
-                    {data.level_2_name}s
-                  </Typography>
-                  <Typography variant="h4" fontWeight={600} sx={{ my: 1, color: colors.primary }}>
-                    {progress.level2.completed ?? 0}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    of {progress.level2.total ?? 0} implemented
-                  </Typography>
-                </Box>
-              </Grid>
+            {/* Controls Count */}
+            <Box>
+              <Typography sx={{ fontSize: "12px", color: "#666666", mb: 1 }}>
+                {data.level_2_name}s
+              </Typography>
+              <Typography sx={{ fontSize: "24px", fontWeight: 600, color: colors.primary }}>
+                {progress.level2.completed ?? 0}
+              </Typography>
+              <Typography sx={{ fontSize: "12px", color: "#666666" }}>
+                of {progress.level2.total ?? 0} implemented
+              </Typography>
+            </Box>
 
-              <Grid item xs={12} md={4}>
-                <Box sx={{ textAlign: "center" }}>
-                  <Typography variant="caption" color="text.secondary" display="block">
-                    Assigned
-                  </Typography>
-                  <Typography variant="h4" fontWeight={600} sx={{ my: 1, color: colors.info }}>
-                    {progress.overall.assigned ?? 0}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    of {progress.overall.total ?? 0} have owners
-                  </Typography>
-                </Box>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
+            {/* Assigned Count */}
+            <Box>
+              <Typography sx={{ fontSize: "12px", color: "#666666", mb: 1 }}>
+                Assigned
+              </Typography>
+              <Typography sx={{ fontSize: "24px", fontWeight: 600, color: colors.primary }}>
+                {progress.overall.assigned ?? 0}
+              </Typography>
+              <Typography sx={{ fontSize: "12px", color: "#666666" }}>
+                of {progress.overall.total ?? 0} have owners
+              </Typography>
+            </Box>
+          </Box>
+
+          {/* Completed text */}
+          <Typography sx={{ fontSize: "13px", color: "#1A1919", mt: 2 }}>
+            {progress.overall.completed ?? 0} / {progress.overall.total ?? 0} completed
+          </Typography>
+        </Box>
       )}
 
-      {/* Framework Structure */}
+      {/* Framework Structure - Accordions */}
       {data.structure?.map((level1, idx) => {
         const level1Progress = calculateLevel1Progress(level1.items);
+        const isExpanded = expandedLevel1 === idx;
 
         return (
           <Accordion
             key={level1.id}
-            expanded={expandedLevel1 === idx}
-            onChange={() => setExpandedLevel1(expandedLevel1 === idx ? null : idx)}
+            expanded={isExpanded}
+            onChange={() => setExpandedLevel1(isExpanded ? null : idx)}
             sx={{
               mb: 2,
               "&:before": { display: "none" },
-              boxShadow: theme.shadows.sm,
-              borderRadius: `${theme.borderRadius.md} !important`,
+              boxShadow: "none",
+              border: "1px solid #E5E7EB",
+              borderRadius: "4px !important",
               overflow: "hidden",
             }}
+            disableGutters
           >
             <AccordionSummary
-              expandIcon={<ChevronDown />}
+              expandIcon={
+                <ChevronUp
+                  size={20}
+                  style={{
+                    color: "#666666",
+                    transform: isExpanded ? "rotate(0deg)" : "rotate(180deg)",
+                    transition: "transform 0.2s",
+                  }}
+                />
+              }
               sx={{
-                bgcolor: "#f8fafc",
-                "&:hover": { bgcolor: "#f1f5f9" },
+                px: 2.5,
+                py: 1.5,
+                minHeight: "auto",
+                "& .MuiAccordionSummary-content": {
+                  my: 0,
+                  mr: 2,
+                },
               }}
             >
-              <Box sx={{ display: "flex", alignItems: "center", width: "100%", gap: 2, pr: 2 }}>
-                <Typography variant="subtitle1" fontWeight={600} sx={{ flex: 1 }}>
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", pr: 2 }}>
+                <Typography sx={{ fontSize: "14px", fontWeight: 600, color: "#1A1919" }}>
                   {level1.title}
                 </Typography>
 
@@ -442,186 +455,104 @@ export const CustomFrameworkViewer: React.FC<CustomFrameworkViewerProps> = ({
                   <Box sx={{ width: 100 }}>
                     <LinearProgress
                       variant="determinate"
-                      value={level1Progress}
+                      value={level1Progress.percentage}
                       sx={{
-                        height: 8,
-                        borderRadius: 4,
-                        bgcolor: "#e2e8f0",
+                        height: 6,
+                        borderRadius: 3,
+                        backgroundColor: "#F3F4F6",
                         "& .MuiLinearProgress-bar": {
-                          bgcolor: level1Progress === 100 ? colors.success : colors.primary,
+                          backgroundColor: getProgressColor(level1Progress.percentage),
+                          borderRadius: 3,
                         },
                       }}
                     />
                   </Box>
-                  <Chip
-                    label={`${level1Progress}%`}
-                    size="small"
-                    sx={{
-                      bgcolor: level1Progress === 100 ? statusColors["Implemented"].bg : "#e2e8f0",
-                      color: level1Progress === 100 ? colors.success : textColors.secondary,
-                      fontWeight: 500,
-                    }}
-                  />
-                  <Typography variant="body2" color="text.secondary" sx={{ minWidth: 60 }}>
-                    {level1.items?.filter((i) => i.status === "Implemented").length} / {level1.items?.length}
+                  <Typography sx={{ fontSize: "13px", color: "#666666", minWidth: 35, textAlign: "right" }}>
+                    {level1Progress.percentage}%
+                  </Typography>
+                  <Typography sx={{ fontSize: "13px", color: "#666666", minWidth: 40 }}>
+                    {level1Progress.completed} / {level1Progress.total}
                   </Typography>
                 </Box>
               </Box>
             </AccordionSummary>
 
-            <AccordionDetails sx={{ p: 0 }}>
+            <AccordionDetails sx={{ px: 2.5, py: 2, borderTop: "1px solid #E5E7EB" }}>
               {level1.description && (
-                <Box sx={{ px: 3, py: 2, bgcolor: "#fafafa", borderBottom: "1px solid #e2e8f0" }}>
-                  <Typography variant="body2" color="text.secondary">
-                    {level1.description}
-                  </Typography>
-                </Box>
+                <Typography sx={{ fontSize: "13px", color: "#666666", mb: 2 }}>
+                  {level1.description}
+                </Typography>
               )}
 
-              <Box sx={{ p: 2 }}>
-                <Grid container spacing={2}>
-                  {level1.items?.map((level2) => (
-                    <Grid item xs={12} key={level2.id}>
-                      <Paper
-                        elevation={0}
-                        sx={{
-                          p: 2,
-                          cursor: "pointer",
-                          transition: "all 0.2s",
-                          border: "1px solid #e2e8f0",
-                          borderLeft: `4px solid ${getStatusColor(level2.status || "Not started")}`,
-                          "&:hover": {
-                            bgcolor: "#f8fafc",
-                            borderColor: colors.primary,
-                            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-                          },
-                        }}
-                        onClick={() => handleItemClick(level2)}
-                      >
-                        <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
-                          <Box sx={{ flex: 1, minWidth: 0 }}>
-                            <Typography variant="subtitle2" fontWeight={500}>
-                              {level2.title}
-                            </Typography>
-                            {level2.description && (
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                sx={{
-                                  mt: 0.5,
-                                  display: "-webkit-box",
-                                  WebkitLineClamp: 2,
-                                  WebkitBoxOrient: "vertical",
-                                  overflow: "hidden",
-                                }}
-                              >
-                                {level2.description}
-                              </Typography>
-                            )}
-
-                            {/* Metadata row */}
-                            <Box sx={{ display: "flex", gap: 2, mt: 1.5, flexWrap: "wrap" }}>
-                              {formatUserName(level2) && (
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                                  <User size={14} color={textColors.secondary} />
-                                  <Typography variant="caption" color="text.secondary">
-                                    {formatUserName(level2)}
-                                  </Typography>
-                                </Box>
-                              )}
-
-                              {level2.due_date && (
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                                  <Clock size={14} color={textColors.secondary} />
-                                  <Typography variant="caption" color="text.secondary">
-                                    {new Date(level2.due_date).toLocaleDateString()}
-                                  </Typography>
-                                </Box>
-                              )}
-
-                              {level2.evidence_links && level2.evidence_links.length > 0 && (
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                                  <FileText size={14} color={textColors.secondary} />
-                                  <Typography variant="caption" color="text.secondary">
-                                    {level2.evidence_links.length} evidence
-                                  </Typography>
-                                </Box>
-                              )}
-
-                              {level2.linked_risks && level2.linked_risks.length > 0 && (
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                                  <LinkIcon size={14} color={colors.warning} />
-                                  <Typography variant="caption" color="text.secondary">
-                                    {level2.linked_risks.length} risks
-                                  </Typography>
-                                </Box>
-                              )}
-                            </Box>
-                          </Box>
-
-                          <Chip
-                            label={level2.status || "Not started"}
-                            size="small"
+              <Grid container spacing={2}>
+                {level1.items?.map((level2) => (
+                  <Grid item xs={12} md={6} key={level2.id}>
+                    <Box
+                      onClick={() => handleItemClick(level2)}
+                      sx={{
+                        p: 2,
+                        cursor: "pointer",
+                        border: "1px solid #E5E7EB",
+                        borderLeft: `4px solid ${getStatusColor(level2.status || "Not started")}`,
+                        borderRadius: "4px",
+                        backgroundColor: "#fff",
+                        transition: "all 0.2s",
+                        "&:hover": {
+                          backgroundColor: "#FBFBFB",
+                          borderColor: "#d0d5dd",
+                        },
+                      }}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 2 }}>
+                        <Box sx={{ flex: 1, minWidth: 0 }}>
+                          <Typography
                             sx={{
-                              bgcolor: getStatusBg(level2.status || "Not started"),
-                              color: getStatusColor(level2.status || "Not started"),
+                              fontSize: "13px",
                               fontWeight: 500,
-                              flexShrink: 0,
+                              color: "#1A1919",
+                              mb: 0.5,
                             }}
-                          />
+                          >
+                            {level2.title}
+                          </Typography>
+                          {level2.description && (
+                            <Typography
+                              sx={{
+                                fontSize: "12px",
+                                color: "#666666",
+                                display: "-webkit-box",
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: "vertical",
+                                overflow: "hidden",
+                                lineHeight: 1.4,
+                              }}
+                            >
+                              {level2.description}
+                            </Typography>
+                          )}
                         </Box>
 
-                        {/* Level 3 items (nested) */}
-                        {level2.items && level2.items.length > 0 && (
-                          <Box sx={{ mt: 2, pl: 2, borderLeft: "2px solid #e2e8f0" }}>
-                            <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: "block" }}>
-                              {data.level_3_name}s ({level2.items.length})
-                            </Typography>
-                            {level2.items.slice(0, 3).map((level3) => (
-                              <Box
-                                key={level3.id}
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: 1,
-                                  py: 0.5,
-                                }}
-                              >
-                                <Box
-                                  sx={{
-                                    width: 8,
-                                    height: 8,
-                                    borderRadius: "50%",
-                                    bgcolor: getStatusColor(level3.status || "Not started"),
-                                  }}
-                                />
-                                <Typography variant="body2" sx={{ flex: 1 }} noWrap>
-                                  {level3.title}
-                                </Typography>
-                                <Chip
-                                  label={level3.status || "Not started"}
-                                  size="small"
-                                  sx={{
-                                    height: 20,
-                                    fontSize: "0.7rem",
-                                    bgcolor: getStatusBg(level3.status || "Not started"),
-                                    color: getStatusColor(level3.status || "Not started"),
-                                  }}
-                                />
-                              </Box>
-                            ))}
-                            {level2.items.length > 3 && (
-                              <Typography variant="caption" color="text.secondary">
-                                +{level2.items.length - 3} more
-                              </Typography>
-                            )}
-                          </Box>
-                        )}
-                      </Paper>
-                    </Grid>
-                  ))}
-                </Grid>
-              </Box>
+                        <Chip
+                          label={level2.status || "Not started"}
+                          size="small"
+                          sx={{
+                            backgroundColor: getStatusBg(level2.status || "Not started"),
+                            color: getStatusColor(level2.status || "Not started"),
+                            fontWeight: 500,
+                            fontSize: "11px",
+                            height: 24,
+                            flexShrink: 0,
+                            border: "none",
+                            "& .MuiChip-label": {
+                              px: 1.5,
+                            },
+                          }}
+                        />
+                      </Box>
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
             </AccordionDetails>
           </Accordion>
         );
