@@ -136,7 +136,7 @@
       "version": "1.0.0",
       "author": "VerifyWise",
       "category": "ml_ops",
-      "iconUrl": "/assets/azure_ai_logo.svg",
+      "iconUrl": "plugins/azure-ai-foundry/icon.jpg",
       "documentationUrl": "https://docs.verifywise.com/integrations/azure-ai-foundry",
       "supportUrl": "https://support.verifywise.com",
       "isOfficial": true,
