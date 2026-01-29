@@ -512,13 +512,13 @@ export const FrameworkImportModal: React.FC<FrameworkImportModalProps> = ({
 
   const renderMethodSelection = () => (
     <Box sx={{ mt: 3 }}>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={4}>
+      <Grid container spacing={2} sx={{ alignItems: "stretch" }}>
+        <Grid item xs={12} sm={4}>
           <Card
             sx={methodCardStyle(importMethod === "template")}
             onClick={() => setImportMethod("template")}
           >
-            <CardContent sx={{ textAlign: "center", py: 4 }}>
+            <CardContent sx={{ textAlign: "center", py: 4, display: "flex", flexDirection: "column", alignItems: "center", minHeight: 180 }}>
               <Library
                 size={40}
                 color={colors.primary}
@@ -535,31 +535,32 @@ export const FrameworkImportModal: React.FC<FrameworkImportModalProps> = ({
                 Template Library
               </Typography>
               <Typography
-                sx={{ fontSize: fontSizes.medium, color: textColors.muted }}
+                sx={{ fontSize: fontSizes.medium, color: textColors.muted, mb: 2 }}
               >
                 Choose from pre-built compliance frameworks
               </Typography>
-              <Chip
-                label="Recommended"
-                size="small"
-                sx={{
-                  mt: 2,
-                  backgroundColor: `${colors.primary}12`,
-                  color: colors.primary,
-                  fontWeight: 500,
-                  fontSize: fontSizes.small,
-                }}
-              />
+              <Box sx={{ mt: "auto" }}>
+                <Chip
+                  label="Recommended"
+                  size="small"
+                  sx={{
+                    backgroundColor: `${colors.primary}12`,
+                    color: colors.primary,
+                    fontWeight: 500,
+                    fontSize: fontSizes.small,
+                  }}
+                />
+              </Box>
             </CardContent>
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} sm={4}>
           <Card
             sx={methodCardStyle(importMethod === "json")}
             onClick={() => setImportMethod("json")}
           >
-            <CardContent sx={{ textAlign: "center", py: 4 }}>
+            <CardContent sx={{ textAlign: "center", py: 4, display: "flex", flexDirection: "column", alignItems: "center", minHeight: 180 }}>
               <FileJson
                 size={40}
                 color={colors.info}
@@ -584,12 +585,12 @@ export const FrameworkImportModal: React.FC<FrameworkImportModalProps> = ({
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} sm={4}>
           <Card
             sx={methodCardStyle(importMethod === "excel")}
             onClick={() => setImportMethod("excel")}
           >
-            <CardContent sx={{ textAlign: "center", py: 4 }}>
+            <CardContent sx={{ textAlign: "center", py: 4, display: "flex", flexDirection: "column", alignItems: "center", minHeight: 180 }}>
               <FileSpreadsheet
                 size={40}
                 color={colors.success}

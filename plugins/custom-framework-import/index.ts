@@ -385,6 +385,22 @@ function validateFrameworkImport(data: any): ValidationResult {
   };
 }
 
+// ========== HELPER FUNCTIONS ==========
+
+/**
+ * Convert a JavaScript array to PostgreSQL array literal format
+ * e.g., ["a", "b"] -> '{"a","b"}'
+ */
+function toPgArray(arr: string[] | undefined | null): string {
+  if (!arr || arr.length === 0) return '{}';
+  const escaped = arr.map(item => {
+    // Escape backslashes and double quotes
+    const escapedItem = String(item).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    return `"${escapedItem}"`;
+  });
+  return `{${escaped.join(',')}}`;
+}
+
 // ========== CORE FUNCTIONS ==========
 
 async function importFramework(
@@ -444,7 +460,7 @@ async function importFramework(
         const [level2Result] = await sequelize.query(
           `INSERT INTO "${tenantId}".custom_framework_level2
            (level1_id, title, description, order_no, summary, questions, evidence_examples, metadata)
-           VALUES (:level1_id, :title, :description, :order_no, :summary, :questions, :evidence_examples, :metadata)
+           VALUES (:level1_id, :title, :description, :order_no, :summary, :questions::text[], :evidence_examples::text[], :metadata)
            RETURNING id`,
           {
             replacements: {
@@ -453,8 +469,8 @@ async function importFramework(
               description: level2.description || null,
               order_no: level2.order_no,
               summary: level2.summary || null,
-              questions: level2.questions || [],
-              evidence_examples: level2.evidence_examples || [],
+              questions: toPgArray(level2.questions),
+              evidence_examples: toPgArray(level2.evidence_examples),
               metadata: JSON.stringify(level2.metadata || {}),
             },
             transaction,
@@ -473,7 +489,7 @@ async function importFramework(
             await sequelize.query(
               `INSERT INTO "${tenantId}".custom_framework_level3
                (level2_id, title, description, order_no, summary, questions, evidence_examples, metadata)
-               VALUES (:level2_id, :title, :description, :order_no, :summary, :questions, :evidence_examples, :metadata)`,
+               VALUES (:level2_id, :title, :description, :order_no, :summary, :questions::text[], :evidence_examples::text[], :metadata)`,
               {
                 replacements: {
                   level2_id: level2Id,
@@ -481,8 +497,8 @@ async function importFramework(
                   description: level3.description || null,
                   order_no: level3.order_no || 1,
                   summary: level3.summary || null,
-                  questions: level3.questions || [],
-                  evidence_examples: level3.evidence_examples || [],
+                  questions: toPgArray(level3.questions),
+                  evidence_examples: toPgArray(level3.evidence_examples),
                   metadata: JSON.stringify(level3.metadata || {}),
                 },
                 transaction,
