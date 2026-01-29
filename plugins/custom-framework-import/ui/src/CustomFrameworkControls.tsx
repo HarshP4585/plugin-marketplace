@@ -6,7 +6,7 @@
  * Uses the same styling as the app's ButtonToggle component.
  */
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Box,
   CircularProgress,
@@ -88,17 +88,21 @@ const toggleTabStyle = {
   gap: 1,
 };
 
-const sliderStyle = (activeIndex: number, optionsCount: number) => ({
+interface SliderPosition {
+  left: number;
+  width: number;
+}
+
+const sliderStyle = (position: SliderPosition) => ({
   position: "absolute",
   top: "2px",
-  left: "2px",
   height: "calc(100% - 4px)",
-  width: `calc((100% - ${(optionsCount + 1) * 2}px) / ${optionsCount})`,
   bgcolor: "background.paper",
   border: "1px solid rgba(0, 0, 0, 0.08)",
   borderRadius: "4px",
-  transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-  transform: `translateX(calc(${activeIndex} * (100% + 2px)))`,
+  transition: "left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+  left: `${position.left}px`,
+  width: `${position.width}px`,
   zIndex: 0,
 });
 
@@ -116,6 +120,10 @@ export const CustomFrameworkControls: React.FC<CustomFrameworkControlsProps> = (
   const [selectedCustomFramework, setSelectedCustomFramework] = useState<number | null>(null);
   const [isCustomSelected, setIsCustomSelected] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [sliderPosition, setSliderPosition] = useState<SliderPosition>({ left: 2, width: 120 });
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const api = apiServices || {
     get: async (url: string) => {
@@ -175,6 +183,38 @@ export const CustomFrameworkControls: React.FC<CustomFrameworkControlsProps> = (
     loadFrameworks();
   }, [loadFrameworks]);
 
+  // Calculate active index for the slider
+  const totalOptions = builtInFrameworks.length + customFrameworks.length;
+  let activeIndex: number;
+  if (isCustomSelected && selectedCustomFramework !== null) {
+    const customIndex = customFrameworks.findIndex(
+      (fw) => fw.framework_id === selectedCustomFramework
+    );
+    activeIndex = builtInFrameworks.length + customIndex;
+  } else {
+    activeIndex = selectedBuiltInFramework;
+  }
+
+  // Update slider position when active tab changes
+  useEffect(() => {
+    const updateSliderPosition = () => {
+      const activeTab = tabRefs.current[activeIndex];
+      const container = containerRef.current;
+      if (activeTab && container) {
+        const containerRect = container.getBoundingClientRect();
+        const tabRect = activeTab.getBoundingClientRect();
+        setSliderPosition({
+          left: tabRect.left - containerRect.left,
+          width: tabRect.width,
+        });
+      }
+    };
+
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(updateSliderPosition, 10);
+    return () => clearTimeout(timer);
+  }, [activeIndex, customFrameworks.length, builtInFrameworks.length]);
+
   const handleBuiltInSelect = (index: number) => {
     setIsCustomSelected(false);
     setSelectedCustomFramework(null);
@@ -200,18 +240,6 @@ export const CustomFrameworkControls: React.FC<CustomFrameworkControlsProps> = (
     return <>{children}</>;
   }
 
-  // Calculate active index for the slider
-  const totalOptions = builtInFrameworks.length + customFrameworks.length;
-  let activeIndex: number;
-  if (isCustomSelected && selectedCustomFramework !== null) {
-    const customIndex = customFrameworks.findIndex(
-      (fw) => fw.framework_id === selectedCustomFramework
-    );
-    activeIndex = builtInFrameworks.length + customIndex;
-  } else {
-    activeIndex = selectedBuiltInFramework;
-  }
-
   const currentCustomFramework = customFrameworks.find(
     (fw) => fw.framework_id === selectedCustomFramework
   );
@@ -220,14 +248,19 @@ export const CustomFrameworkControls: React.FC<CustomFrameworkControlsProps> = (
     <Stack spacing={3}>
       {/* Combined framework toggle - matching ButtonToggle styling */}
       {project && totalOptions > 0 && (
-        <Box data-joyride-id="framework-toggle" sx={toggleContainerStyle(34)}>
+        <Box
+          ref={containerRef}
+          data-joyride-id="framework-toggle"
+          sx={toggleContainerStyle(34)}
+        >
           {/* Sliding background */}
-          <Box sx={sliderStyle(activeIndex, totalOptions)} />
+          <Box sx={sliderStyle(sliderPosition)} />
 
           {/* Built-in framework options */}
           {builtInFrameworks.map((framework, index) => (
             <Box
               key={framework.id}
+              ref={(el: HTMLDivElement | null) => { tabRefs.current[index] = el; }}
               onClick={() => handleBuiltInSelect(index)}
               sx={toggleTabStyle}
             >
@@ -236,9 +269,10 @@ export const CustomFrameworkControls: React.FC<CustomFrameworkControlsProps> = (
           ))}
 
           {/* Custom framework options */}
-          {customFrameworks.map((framework) => (
+          {customFrameworks.map((framework, index) => (
             <Box
               key={`custom-${framework.framework_id}`}
+              ref={(el: HTMLDivElement | null) => { tabRefs.current[builtInFrameworks.length + index] = el; }}
               onClick={() => handleCustomSelect(framework.framework_id)}
               sx={toggleTabStyle}
             >
@@ -266,6 +300,7 @@ export const CustomFrameworkControls: React.FC<CustomFrameworkControlsProps> = (
       {/* Content area */}
       {isCustomSelected && selectedCustomFramework && currentCustomFramework ? (
         <CustomFrameworkViewer
+          key={`custom-framework-${selectedCustomFramework}`}
           frameworkId={selectedCustomFramework}
           projectId={project.id}
           frameworkName={currentCustomFramework.name}

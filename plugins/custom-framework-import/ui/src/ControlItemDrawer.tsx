@@ -446,6 +446,25 @@ export const ControlItemDrawer: React.FC<ControlItemDrawerProps> = ({
             </Select>
           </FormControl>
 
+          {/* Approver */}
+          <FormControl fullWidth size="small">
+            <InputLabel>Approver</InputLabel>
+            <Select
+              value={formData.approver}
+              label="Approver"
+              onChange={(e) => setFormData((prev) => ({ ...prev, approver: e.target.value }))}
+            >
+              <MenuItem value="">
+                <em>Not assigned</em>
+              </MenuItem>
+              {users.map((user) => (
+                <MenuItem key={user.id} value={user.id.toString()}>
+                  {user.name} {user.surname}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
           {/* Due Date */}
           <TextField
             label="Due Date"
