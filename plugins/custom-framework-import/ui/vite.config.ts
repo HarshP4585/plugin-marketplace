@@ -27,7 +27,7 @@ export default defineConfig({
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
-          "react/jsx-runtime": "ReactJSXRuntime",
+          "react/jsx-runtime": "jsxRuntime",
           "@mui/material": "MUI",
           "@emotion/react": "emotionReact",
           "@emotion/styled": "emotionStyled",
