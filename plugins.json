@@ -341,6 +341,11 @@
             "slotId": "page.org-framework.management",
             "componentName": "CustomFrameworkCards",
             "renderType": "raw"
+          },
+          {
+            "slotId": "page.controls.custom-framework",
+            "componentName": "CustomFrameworkControls",
+            "renderType": "raw"
           }
         ]
       }
