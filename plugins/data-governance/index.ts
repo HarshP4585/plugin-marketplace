@@ -1,7 +1,8 @@
 /**
  * Data Governance Framework Plugin
  *
- * Provides Data Governance compliance framework.
+ * Auto-generated from template.json - do not edit directly.
+ * To modify, update template.json and rebuild.
  */
 
 import { createFrameworkPlugin } from "../../packages/custom-framework-base";
@@ -9,8 +10,8 @@ import template from "./template.json";
 
 const plugin = createFrameworkPlugin({
   key: "data-governance",
-  name: "Data Governance",
-  description: "Data Governance framework for enterprise data management and quality",
+  name: "Data Governance Framework",
+  description: "Comprehensive framework for establishing data governance practices including data quality, stewardship, lifecycle management, and metadata management.",
   version: "1.0.0",
   author: "VerifyWise",
   template: (template as any).framework,

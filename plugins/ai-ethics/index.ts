@@ -1,7 +1,8 @@
 /**
  * AI Ethics & Governance Framework Plugin
  *
- * Provides AI Ethics and Governance compliance framework.
+ * Auto-generated from template.json - do not edit directly.
+ * To modify, update template.json and rebuild.
  */
 
 import { createFrameworkPlugin } from "../../packages/custom-framework-base";
@@ -9,8 +10,8 @@ import template from "./template.json";
 
 const plugin = createFrameworkPlugin({
   key: "ai-ethics",
-  name: "AI Ethics & Governance",
-  description: "AI Ethics and Governance framework for responsible AI development and deployment",
+  name: "AI Ethics & Governance Framework",
+  description: "Comprehensive framework for responsible AI development and deployment, covering fairness, transparency, accountability, and human oversight.",
   version: "1.0.0",
   author: "VerifyWise",
   template: (template as any).framework,
