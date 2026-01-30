@@ -726,7 +726,7 @@ function createRouteHandlers(pluginKey: string, config: FrameworkPluginConfig) {
     try {
       const [frameworks] = await sequelize.query(
         `
-        SELECT cf.*, cfp.id as project_framework_id, cfp.created_at as added_at
+        SELECT cf.*, cf.id as framework_id, cfp.id as project_framework_id, cfp.created_at as added_at
         FROM "${tenantId}".custom_frameworks cf
         JOIN "${tenantId}".custom_framework_projects cfp ON cf.id = cfp.framework_id
         WHERE cfp.project_id = :projectId
