@@ -101,7 +101,7 @@ export const FrameworkDetailDrawer: React.FC<FrameworkDetailDrawerProps> = ({
   frameworkId,
   apiServices,
   onNavigateToProject: _onNavigateToProject,
-  pluginKey = "custom-framework-import",
+  pluginKey,
 }) => {
   const [details, setDetails] = useState<FrameworkDetails | null>(null);
   const [loading, setLoading] = useState(false);

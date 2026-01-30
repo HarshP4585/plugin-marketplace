@@ -80,7 +80,7 @@ interface CustomFrameworkConfigProps {
 export const CustomFrameworkConfig: React.FC<CustomFrameworkConfigProps> = ({
   apiServices,
   pluginEnabled = true,
-  pluginKey = "custom-framework-import",
+  pluginKey,
 }) => {
   const [frameworks, setFrameworks] = useState<CustomFramework[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);

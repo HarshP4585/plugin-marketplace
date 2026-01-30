@@ -159,7 +159,7 @@ export const CustomFrameworkViewer: React.FC<CustomFrameworkViewerProps> = ({
   frameworkName,
   apiServices,
   onRefresh,
-  pluginKey = "custom-framework-import",
+  pluginKey,
 }) => {
   const [data, setData] = useState<FrameworkData | null>(null);
   const [progress, setProgress] = useState<ProgressData | null>(null);

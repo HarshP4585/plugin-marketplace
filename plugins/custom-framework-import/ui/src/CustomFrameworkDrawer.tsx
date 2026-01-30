@@ -71,7 +71,7 @@ export const CustomFrameworkDrawer: React.FC<CustomFrameworkDrawerProps> = ({
   users = [],
   apiServices,
   onSave,
-  pluginKey = "custom-framework-import",
+  pluginKey,
 }) => {
   const [formData, setFormData] = useState<any>({});
   const [loading, setSaving] = useState(false);

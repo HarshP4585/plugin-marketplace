@@ -337,7 +337,7 @@
       "entryPoint": "dist/index.js",
       "dependencies": {},
       "ui": {
-        "bundleUrl": "/api/plugins/custom-framework-import/ui/dist/index.esm.js",
+        "bundleUrl": "/api/plugins/soc2/ui/dist/index.esm.js",
         "globalName": "PluginCustomFrameworkImport",
         "slots": [
           {
@@ -347,7 +347,8 @@
             "props": {
               "label": "Custom Frameworks",
               "icon": "FileJson",
-              "value": "custom-frameworks"
+              "value": "custom-frameworks",
+              "pluginKey": "soc2"
             }
           },
           {
@@ -434,7 +435,7 @@
       "entryPoint": "dist/index.js",
       "dependencies": {},
       "ui": {
-        "bundleUrl": "/api/plugins/custom-framework-import/ui/dist/index.esm.js",
+        "bundleUrl": "/api/plugins/gdpr/ui/dist/index.esm.js",
         "globalName": "PluginCustomFrameworkImport",
         "slots": [
           {
@@ -444,7 +445,8 @@
             "props": {
               "label": "Custom Frameworks",
               "icon": "FileJson",
-              "value": "custom-frameworks"
+              "value": "custom-frameworks",
+              "pluginKey": "gdpr"
             }
           },
           {
@@ -531,7 +533,7 @@
       "entryPoint": "dist/index.js",
       "dependencies": {},
       "ui": {
-        "bundleUrl": "/api/plugins/custom-framework-import/ui/dist/index.esm.js",
+        "bundleUrl": "/api/plugins/hipaa/ui/dist/index.esm.js",
         "globalName": "PluginCustomFrameworkImport",
         "slots": [
           {
@@ -541,7 +543,8 @@
             "props": {
               "label": "Custom Frameworks",
               "icon": "FileJson",
-              "value": "custom-frameworks"
+              "value": "custom-frameworks",
+              "pluginKey": "hipaa"
             }
           },
           {
@@ -628,7 +631,7 @@
       "entryPoint": "dist/index.js",
       "dependencies": {},
       "ui": {
-        "bundleUrl": "/api/plugins/custom-framework-import/ui/dist/index.esm.js",
+        "bundleUrl": "/api/plugins/pci-dss/ui/dist/index.esm.js",
         "globalName": "PluginCustomFrameworkImport",
         "slots": [
           {
@@ -638,7 +641,8 @@
             "props": {
               "label": "Custom Frameworks",
               "icon": "FileJson",
-              "value": "custom-frameworks"
+              "value": "custom-frameworks",
+              "pluginKey": "pci-dss"
             }
           },
           {
@@ -725,7 +729,7 @@
       "entryPoint": "dist/index.js",
       "dependencies": {},
       "ui": {
-        "bundleUrl": "/api/plugins/custom-framework-import/ui/dist/index.esm.js",
+        "bundleUrl": "/api/plugins/ccpa/ui/dist/index.esm.js",
         "globalName": "PluginCustomFrameworkImport",
         "slots": [
           {
@@ -735,7 +739,8 @@
             "props": {
               "label": "Custom Frameworks",
               "icon": "FileJson",
-              "value": "custom-frameworks"
+              "value": "custom-frameworks",
+              "pluginKey": "ccpa"
             }
           },
           {
@@ -822,7 +827,7 @@
       "entryPoint": "dist/index.js",
       "dependencies": {},
       "ui": {
-        "bundleUrl": "/api/plugins/custom-framework-import/ui/dist/index.esm.js",
+        "bundleUrl": "/api/plugins/dora/ui/dist/index.esm.js",
         "globalName": "PluginCustomFrameworkImport",
         "slots": [
           {
@@ -832,7 +837,8 @@
             "props": {
               "label": "Custom Frameworks",
               "icon": "FileJson",
-              "value": "custom-frameworks"
+              "value": "custom-frameworks",
+              "pluginKey": "dora"
             }
           },
           {
@@ -919,7 +925,7 @@
       "entryPoint": "dist/index.js",
       "dependencies": {},
       "ui": {
-        "bundleUrl": "/api/plugins/custom-framework-import/ui/dist/index.esm.js",
+        "bundleUrl": "/api/plugins/nist-csf/ui/dist/index.esm.js",
         "globalName": "PluginCustomFrameworkImport",
         "slots": [
           {
@@ -929,7 +935,8 @@
             "props": {
               "label": "Custom Frameworks",
               "icon": "FileJson",
-              "value": "custom-frameworks"
+              "value": "custom-frameworks",
+              "pluginKey": "nist-csf"
             }
           },
           {
@@ -1016,7 +1023,7 @@
       "entryPoint": "dist/index.js",
       "dependencies": {},
       "ui": {
-        "bundleUrl": "/api/plugins/custom-framework-import/ui/dist/index.esm.js",
+        "bundleUrl": "/api/plugins/cis-controls/ui/dist/index.esm.js",
         "globalName": "PluginCustomFrameworkImport",
         "slots": [
           {
@@ -1026,7 +1033,8 @@
             "props": {
               "label": "Custom Frameworks",
               "icon": "FileJson",
-              "value": "custom-frameworks"
+              "value": "custom-frameworks",
+              "pluginKey": "cis-controls"
             }
           },
           {
@@ -1113,7 +1121,7 @@
       "entryPoint": "dist/index.js",
       "dependencies": {},
       "ui": {
-        "bundleUrl": "/api/plugins/custom-framework-import/ui/dist/index.esm.js",
+        "bundleUrl": "/api/plugins/iso27001/ui/dist/index.esm.js",
         "globalName": "PluginCustomFrameworkImport",
         "slots": [
           {
@@ -1123,7 +1131,8 @@
             "props": {
               "label": "Custom Frameworks",
               "icon": "FileJson",
-              "value": "custom-frameworks"
+              "value": "custom-frameworks",
+              "pluginKey": "iso27001"
             }
           },
           {
@@ -1210,7 +1219,7 @@
       "entryPoint": "dist/index.js",
       "dependencies": {},
       "ui": {
-        "bundleUrl": "/api/plugins/custom-framework-import/ui/dist/index.esm.js",
+        "bundleUrl": "/api/plugins/ai-ethics/ui/dist/index.esm.js",
         "globalName": "PluginCustomFrameworkImport",
         "slots": [
           {
@@ -1220,7 +1229,8 @@
             "props": {
               "label": "Custom Frameworks",
               "icon": "FileJson",
-              "value": "custom-frameworks"
+              "value": "custom-frameworks",
+              "pluginKey": "ai-ethics"
             }
           },
           {
@@ -1307,7 +1317,7 @@
       "entryPoint": "dist/index.js",
       "dependencies": {},
       "ui": {
-        "bundleUrl": "/api/plugins/custom-framework-import/ui/dist/index.esm.js",
+        "bundleUrl": "/api/plugins/data-governance/ui/dist/index.esm.js",
         "globalName": "PluginCustomFrameworkImport",
         "slots": [
           {
@@ -1317,7 +1327,8 @@
             "props": {
               "label": "Custom Frameworks",
               "icon": "FileJson",
-              "value": "custom-frameworks"
+              "value": "custom-frameworks",
+              "pluginKey": "data-governance"
             }
           },
           {

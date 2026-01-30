@@ -158,7 +158,7 @@ export const ControlItemDrawer: React.FC<ControlItemDrawerProps> = ({
   onSave,
   apiServices,
   isOrganizational = false,
-  pluginKey = "custom-framework-import",
+  pluginKey,
 }) => {
   const [activeTab, setActiveTab] = useState("details");
   const [formData, setFormData] = useState({

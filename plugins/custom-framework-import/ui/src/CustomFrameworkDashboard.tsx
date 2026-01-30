@@ -150,7 +150,7 @@ export const CustomFrameworkDashboard: React.FC<CustomFrameworkDashboardProps> =
   showTabContent,
   frameworkId: propFrameworkId,
   frameworkName: _propFrameworkName,
-  pluginKey = "custom-framework-import",
+  pluginKey,
 }) => {
   const [loading, setLoading] = useState(true);
   const [frameworks, setFrameworks] = useState<CustomFramework[]>([]);

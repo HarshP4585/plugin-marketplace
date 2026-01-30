@@ -102,7 +102,7 @@ export const CustomFrameworkOverview: React.FC<CustomFrameworkOverviewProps> = (
   columnStyle,
   projectRiskSection,
   apiServices,
-  pluginKey = "custom-framework-import",
+  pluginKey,
 }) => {
   const [frameworks, setFrameworks] = useState<CustomFramework[]>([]);
   const [progressData, setProgressData] = useState<FrameworkProgress[]>([]);

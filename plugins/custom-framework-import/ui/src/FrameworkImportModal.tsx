@@ -81,7 +81,7 @@ export const FrameworkImportModal: React.FC<FrameworkImportModalProps> = ({
   onClose,
   onImportComplete,
   apiServices,
-  pluginKey = "custom-framework-import",
+  pluginKey,
 }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [importMethod, setImportMethod] = useState<

@@ -1141,7 +1141,7 @@ export function createFrameworkPlugin(config: FrameworkPluginConfig) {
       if (frameworkIds.length > 0) {
         // Delete project associations and implementations (cascade will handle related records)
         await sequelize.query(
-          `DELETE FROM "${tenantId}".custom_framework_projects WHERE framework_id = ANY(:ids)`,
+          `DELETE FROM "${tenantId}".custom_framework_projects WHERE framework_id IN (:ids)`,
           { replacements: { ids: frameworkIds } }
         );
 

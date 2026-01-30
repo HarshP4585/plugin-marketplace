@@ -117,7 +117,7 @@ export const CustomFrameworkControls: React.FC<CustomFrameworkControlsProps> = (
   onRefresh,
   children: _children,
   apiServices,
-  pluginKey = "custom-framework-import",
+  pluginKey,
 }) => {
   const [customFrameworks, setCustomFrameworks] = useState<CustomFramework[]>([]);
   const [selectedCustomFramework, setSelectedCustomFramework] = useState<number | null>(null);

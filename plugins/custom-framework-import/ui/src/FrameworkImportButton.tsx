@@ -23,7 +23,7 @@ export const FrameworkImportButton: React.FC<FrameworkImportButtonProps> = ({
   onImportComplete,
   apiServices,
   variant = "button",
-  pluginKey = "custom-framework-import",
+  pluginKey,
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
 
