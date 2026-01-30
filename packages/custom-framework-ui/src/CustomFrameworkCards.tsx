@@ -148,9 +148,9 @@ export const CustomFrameworkCards: React.FC<CustomFrameworkCardsProps> = ({
   const loadFrameworks = useCallback(async () => {
     try {
       setLoading(true);
-      // Fetch all custom frameworks
+      // Fetch ALL custom frameworks from all plugins
       const response = await api.get(
-        `/plugins/${pluginKey}/frameworks`
+        `/plugins/${pluginKey}/frameworks?all=true`
       );
 
       // Handle various response structures
