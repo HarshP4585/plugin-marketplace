@@ -1,0 +1,114 @@
+{
+  "id": "custom-starter",
+  "name": "Custom Framework Starter",
+  "description": "A minimal starter template for creating your own custom compliance framework. Customize the structure to fit your specific needs.",
+  "category": "Template",
+  "tags": ["Custom", "Starter", "Template", "Blank"],
+  "framework": {
+    "name": "My Custom Framework",
+    "description": "A custom compliance framework tailored to our organization's needs",
+    "version": "1.0.0",
+    "is_organizational": false,
+    "hierarchy": {
+      "type": "two_level",
+      "level1_name": "Category",
+      "level2_name": "Control"
+    },
+    "structure": [
+      {
+        "title": "Category 1: Governance",
+        "description": "Governance and oversight controls",
+        "order_no": 1,
+        "items": [
+          {
+            "title": "GOV-1: Policy Management",
+            "description": "Establish and maintain organizational policies",
+            "order_no": 1,
+            "summary": "Define how policies are created, approved, and maintained",
+            "questions": [
+              "Are policies documented?",
+              "Who approves policies?",
+              "How often are policies reviewed?"
+            ],
+            "evidence_examples": [
+              "Policy document",
+              "Approval records",
+              "Review schedule"
+            ]
+          },
+          {
+            "title": "GOV-2: Roles and Responsibilities",
+            "description": "Define roles and responsibilities for compliance",
+            "order_no": 2,
+            "summary": "Clarify who is responsible for what",
+            "questions": [
+              "Are roles clearly defined?",
+              "Is there accountability for compliance?"
+            ],
+            "evidence_examples": [
+              "Role definitions",
+              "RACI matrix"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Category 2: Risk Management",
+        "description": "Risk identification and mitigation controls",
+        "order_no": 2,
+        "items": [
+          {
+            "title": "RISK-1: Risk Assessment",
+            "description": "Conduct regular risk assessments",
+            "order_no": 1,
+            "summary": "Identify and evaluate risks",
+            "questions": [
+              "How often are risks assessed?",
+              "What methodology is used?",
+              "Who is responsible for risk assessment?"
+            ],
+            "evidence_examples": [
+              "Risk assessment report",
+              "Risk register"
+            ]
+          },
+          {
+            "title": "RISK-2: Risk Treatment",
+            "description": "Implement risk treatment plans",
+            "order_no": 2,
+            "summary": "Address identified risks",
+            "questions": [
+              "Are treatment plans documented?",
+              "Is there a risk owner for each risk?"
+            ],
+            "evidence_examples": [
+              "Treatment plans",
+              "Risk owner assignments"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Category 3: Operations",
+        "description": "Operational controls and procedures",
+        "order_no": 3,
+        "items": [
+          {
+            "title": "OPS-1: Standard Procedures",
+            "description": "Document and follow standard operating procedures",
+            "order_no": 1,
+            "summary": "Ensure consistent operations",
+            "questions": [
+              "Are procedures documented?",
+              "Are procedures followed consistently?"
+            ],
+            "evidence_examples": [
+              "SOP documents",
+              "Training records"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

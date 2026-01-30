@@ -35,6 +35,11 @@ plugin-marketplace/
 │   │   ├── package.json
 │   │   ├── README.md
 │   │   └── ui/
+│   ├── custom-framework-import/  # Custom Framework Import plugin
+│   │   ├── index.ts         # Backend with database tables
+│   │   ├── package.json
+│   │   ├── README.md        # Comprehensive documentation
+│   │   └── ui/              # Full UI with multiple components
 │   └── slack/               # Slack integration plugin
 │       ├── index.ts
 │       ├── package.json
@@ -226,6 +231,11 @@ Plugins can inject UI at these locations:
 | `page.risks.actions` | Risk Management "Insert From" menu | `menuitem`, `modal` |
 | `page.models.tabs` | Model Inventory tabs | `tab` |
 | `page.plugin.config` | Plugin configuration panel | `card`, `inline` |
+| `page.settings.tabs` | Settings page tabs | `tab` |
+| `modal.framework.selection` | Add Framework modal | `card` |
+| `page.framework-dashboard.custom` | Organizational Framework Dashboard | `card` |
+| `page.controls.custom-framework` | Organizational Controls tab | `card` |
+| `page.project-controls.custom-framework` | Project Controls tab | `card` |
 | `page.dashboard.widgets` | Dashboard (future) | `widget` |
 | `layout.sidebar.items` | Sidebar (future) | `menuitem` |
 
@@ -245,10 +255,43 @@ PLUGIN_MARKETPLACE_URL=https://raw.githubusercontent.com/org/plugin-marketplace/
 
 | Plugin | Category | Description |
 |--------|----------|-------------|
+| **Custom Framework Import** | Compliance | Import and manage custom compliance frameworks |
 | **Slack** | Communication | Real-time notifications via Slack |
 | **MLflow** | ML Operations | ML model tracking and sync |
 | **Azure AI Foundry** | ML Operations | Azure ML model tracking and sync |
 | **Risk Import** | Data Management | Bulk import risks from Excel |
+
+## Event-Based Plugin Communication
+
+Plugins can communicate with the main app using custom DOM events for decoupled integration:
+
+```typescript
+// Plugin emits event
+window.dispatchEvent(
+  new CustomEvent("myPluginEvent", {
+    detail: { projectId: 123, data: {...} }
+  })
+);
+
+// App listens (in React component)
+useEffect(() => {
+  const handler = (event: CustomEvent) => {
+    if (event.detail?.projectId === project.id) {
+      // Handle event
+    }
+  };
+  window.addEventListener("myPluginEvent", handler);
+  return () => window.removeEventListener("myPluginEvent", handler);
+}, [project.id]);
+```
+
+### Event Naming Convention
+
+- Use camelCase: `customFrameworkCountChanged`
+- Include context: `projectId`, `userId`, etc.
+- Be descriptive: `Changed`, `Added`, `Removed`
+
+See [Custom Framework Import README](plugins/custom-framework-import/README.md) for a complete example.
 
 ## Contributing
 
