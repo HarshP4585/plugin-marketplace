@@ -17,13 +17,9 @@ import {
   TableRow,
   Paper,
   Chip,
-  IconButton,
-  Tooltip,
-  Stack,
   TablePagination,
 } from "@mui/material";
-import { Trash2, Eye, Building2, Layers } from "lucide-react";
-import { colors } from "./theme";
+import { Building2, Layers } from "lucide-react";
 
 // VerifyWise standard table styles (matching themes/tables.ts)
 const tableStyles = {
@@ -105,16 +101,12 @@ interface CustomFramework {
 
 interface FrameworksTableProps {
   frameworks: CustomFramework[];
-  onViewDetails: (framework: CustomFramework) => void;
-  onDelete: (framework: CustomFramework) => void;
   showPagination?: boolean;
   rowsPerPageOptions?: number[];
 }
 
 export const FrameworksTable: React.FC<FrameworksTableProps> = ({
   frameworks,
-  onViewDetails,
-  onDelete,
   showPagination = true,
   rowsPerPageOptions = [5, 10, 25],
 }) => {
@@ -146,9 +138,6 @@ export const FrameworksTable: React.FC<FrameworksTableProps> = ({
             <TableCell sx={tableStyles.primary.header.cell}>Hierarchy</TableCell>
             <TableCell sx={tableStyles.primary.header.cell}>Structure</TableCell>
             <TableCell sx={tableStyles.primary.header.cell}>Created</TableCell>
-            <TableCell sx={{ ...tableStyles.primary.header.cell, textAlign: "right", minWidth: "60px" }}>
-              Actions
-            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -240,49 +229,6 @@ export const FrameworksTable: React.FC<FrameworksTableProps> = ({
                 <Typography sx={{ fontSize: "13px", color: "#344054" }}>
                   {new Date(fw.created_at).toLocaleDateString()}
                 </Typography>
-              </TableCell>
-
-              {/* Actions */}
-              <TableCell sx={{ ...tableStyles.primary.body.cell, textAlign: "right" }}>
-                <Stack direction="row" spacing={0.5} justifyContent="flex-end">
-                  <Tooltip title="View Details">
-                    <IconButton
-                      size="small"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onViewDetails(fw);
-                      }}
-                      sx={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: "4px",
-                        "&:hover": { backgroundColor: "#F2F4F7" },
-                      }}
-                    >
-                      <Eye size={14} color="#667085" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Delete">
-                    <IconButton
-                      size="small"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDelete(fw);
-                      }}
-                      sx={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: "4px",
-                        "&:hover": {
-                          backgroundColor: "#FEF3F2",
-                          "& svg": { color: colors.error },
-                        },
-                      }}
-                    >
-                      <Trash2 size={14} color="#667085" />
-                    </IconButton>
-                  </Tooltip>
-                </Stack>
               </TableCell>
             </TableRow>
           ))}

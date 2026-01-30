@@ -6,7 +6,7 @@
  * Matches the styling of the organizational frameworks dashboard.
  */
 
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Box,
   Typography,
@@ -175,7 +175,7 @@ export const CustomFrameworkDashboard: React.FC<CustomFrameworkDashboardProps> =
     return null;
   };
 
-  const api = useMemo(() => apiServices || {
+  const apiRef = useRef(apiServices || {
     get: async (url: string) => {
       const token = getAuthToken();
       const headers: Record<string, string> = {};
@@ -183,9 +183,17 @@ export const CustomFrameworkDashboard: React.FC<CustomFrameworkDashboardProps> =
       const response = await fetch(`/api${url}`, { headers });
       return { data: await response.json(), status: response.status };
     },
+  });
+
+  // Update ref if apiServices changes
+  useEffect(() => {
+    if (apiServices) {
+      apiRef.current = apiServices;
+    }
   }, [apiServices]);
 
   const loadData = useCallback(async () => {
+    const api = apiRef.current;
     if (!project?.id) {
       setLoading(false);
       return;
@@ -348,7 +356,7 @@ export const CustomFrameworkDashboard: React.FC<CustomFrameworkDashboardProps> =
     } finally {
       setLoading(false);
     }
-  }, [project?.id, api, pluginKey]);
+  }, [project?.id, pluginKey]);
 
   useEffect(() => {
     loadData();

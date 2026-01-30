@@ -17,7 +17,7 @@ var __copyProps = (to, from, except, desc) => {
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// index.ts
+// plugins/ai-ethics/index.ts
 var index_exports = {};
 __export(index_exports, {
   install: () => install,
@@ -28,7 +28,7 @@ __export(index_exports, {
 });
 module.exports = __toCommonJS(index_exports);
 
-// ../../packages/custom-framework-base/index.ts
+// packages/custom-framework-base/index.ts
 async function ensureSharedTables(sequelize, tenantId) {
   await sequelize.query(`
     CREATE TABLE IF NOT EXISTS "${tenantId}".custom_frameworks (
@@ -365,8 +365,8 @@ function createRouteHandlers(pluginKey, config) {
     const frameworkId = parseInt(params.frameworkId);
     try {
       const [meta] = await sequelize.query(
-        `SELECT * FROM "${tenantId}".custom_frameworks WHERE id = :frameworkId AND (plugin_key = :pluginKey OR plugin_key IS NULL)`,
-        { replacements: { frameworkId, pluginKey } }
+        `SELECT * FROM "${tenantId}".custom_frameworks WHERE id = :frameworkId`,
+        { replacements: { frameworkId } }
       );
       if (meta.length === 0) {
         return { status: 404, data: { message: "Framework not found" } };
@@ -410,8 +410,8 @@ function createRouteHandlers(pluginKey, config) {
     const frameworkId = parseInt(params.frameworkId);
     try {
       const [framework] = await sequelize.query(
-        `SELECT id FROM "${tenantId}".custom_frameworks WHERE id = :frameworkId AND (plugin_key = :pluginKey OR plugin_key IS NULL)`,
-        { replacements: { frameworkId, pluginKey } }
+        `SELECT id FROM "${tenantId}".custom_frameworks WHERE id = :frameworkId`,
+        { replacements: { frameworkId } }
       );
       if (framework.length === 0) {
         return { status: 404, data: { message: "Framework not found" } };
@@ -442,8 +442,8 @@ function createRouteHandlers(pluginKey, config) {
     }
     try {
       const [framework] = await sequelize.query(
-        `SELECT id, hierarchy_type FROM "${tenantId}".custom_frameworks WHERE id = :frameworkId AND (plugin_key = :pluginKey OR plugin_key IS NULL)`,
-        { replacements: { frameworkId, pluginKey } }
+        `SELECT id, hierarchy_type FROM "${tenantId}".custom_frameworks WHERE id = :frameworkId`,
+        { replacements: { frameworkId } }
       );
       if (framework.length === 0) {
         return { status: 404, data: { message: "Framework not found" } };
@@ -547,9 +547,8 @@ function createRouteHandlers(pluginKey, config) {
         `SELECT cfp.id as project_framework_id, cf.*
          FROM "${tenantId}".custom_framework_projects cfp
          JOIN "${tenantId}".custom_frameworks cf ON cfp.framework_id = cf.id
-         WHERE cfp.project_id = :projectId AND cfp.framework_id = :frameworkId
-           AND (cf.plugin_key = :pluginKey OR cf.plugin_key IS NULL)`,
-        { replacements: { projectId, frameworkId, pluginKey } }
+         WHERE cfp.project_id = :projectId AND cfp.framework_id = :frameworkId`,
+        { replacements: { projectId, frameworkId } }
       );
       if (projectFramework.length === 0) {
         return { status: 404, data: { message: "Framework not found in project" } };
@@ -899,7 +898,7 @@ function createFrameworkPlugin(config) {
   };
 }
 
-// template.json
+// plugins/ai-ethics/template.json
 var template_default = {
   id: "ai-ethics",
   name: "AI Ethics & Governance Framework",
@@ -1124,7 +1123,7 @@ var template_default = {
   }
 };
 
-// index.ts
+// plugins/ai-ethics/index.ts
 var plugin = createFrameworkPlugin({
   key: "ai-ethics",
   name: "AI Ethics & Governance",

@@ -523,8 +523,8 @@ function createRouteHandlers(pluginKey: string, config: FrameworkPluginConfig) {
 
     try {
       const [meta] = await sequelize.query(
-        `SELECT * FROM "${tenantId}".custom_frameworks WHERE id = :frameworkId AND (plugin_key = :pluginKey OR plugin_key IS NULL)`,
-        { replacements: { frameworkId, pluginKey } }
+        `SELECT * FROM "${tenantId}".custom_frameworks WHERE id = :frameworkId`,
+        { replacements: { frameworkId } }
       );
 
       if (meta.length === 0) {
@@ -576,10 +576,10 @@ function createRouteHandlers(pluginKey: string, config: FrameworkPluginConfig) {
     const frameworkId = parseInt(params.frameworkId);
 
     try {
-      // Check ownership
+      // Check if framework exists
       const [framework] = await sequelize.query(
-        `SELECT id FROM "${tenantId}".custom_frameworks WHERE id = :frameworkId AND (plugin_key = :pluginKey OR plugin_key IS NULL)`,
-        { replacements: { frameworkId, pluginKey } }
+        `SELECT id FROM "${tenantId}".custom_frameworks WHERE id = :frameworkId`,
+        { replacements: { frameworkId } }
       );
 
       if (framework.length === 0) {
@@ -620,10 +620,10 @@ function createRouteHandlers(pluginKey: string, config: FrameworkPluginConfig) {
     }
 
     try {
-      // Check ownership
+      // Get framework by ID (no plugin_key filter - frameworks can be added from any endpoint)
       const [framework] = await sequelize.query(
-        `SELECT id, hierarchy_type FROM "${tenantId}".custom_frameworks WHERE id = :frameworkId AND (plugin_key = :pluginKey OR plugin_key IS NULL)`,
-        { replacements: { frameworkId, pluginKey } }
+        `SELECT id, hierarchy_type FROM "${tenantId}".custom_frameworks WHERE id = :frameworkId`,
+        { replacements: { frameworkId } }
       );
 
       if (framework.length === 0) {
@@ -753,9 +753,8 @@ function createRouteHandlers(pluginKey: string, config: FrameworkPluginConfig) {
         `SELECT cfp.id as project_framework_id, cf.*
          FROM "${tenantId}".custom_framework_projects cfp
          JOIN "${tenantId}".custom_frameworks cf ON cfp.framework_id = cf.id
-         WHERE cfp.project_id = :projectId AND cfp.framework_id = :frameworkId
-           AND (cf.plugin_key = :pluginKey OR cf.plugin_key IS NULL)`,
-        { replacements: { projectId, frameworkId, pluginKey } }
+         WHERE cfp.project_id = :projectId AND cfp.framework_id = :frameworkId`,
+        { replacements: { projectId, frameworkId } }
       );
 
       if (projectFramework.length === 0) {

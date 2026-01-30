@@ -5,7 +5,7 @@
  * Matches the styling of GroupStatsCard used for EU AI Act and ISO 42001.
  */
 
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Box,
   Stack,
@@ -128,7 +128,7 @@ export const CustomFrameworkOverview: React.FC<CustomFrameworkOverviewProps> = (
     return null;
   };
 
-  const api = useMemo(() => apiServices || {
+  const apiRef = useRef(apiServices || {
     get: async (url: string) => {
       const token = getAuthToken();
       const headers: Record<string, string> = {};
@@ -136,9 +136,17 @@ export const CustomFrameworkOverview: React.FC<CustomFrameworkOverviewProps> = (
       const response = await fetch(`/api${url}`, { headers });
       return { data: await response.json(), status: response.status };
     },
+  });
+
+  // Update ref if apiServices changes
+  useEffect(() => {
+    if (apiServices) {
+      apiRef.current = apiServices;
+    }
   }, [apiServices]);
 
   const loadData = useCallback(async () => {
+    const api = apiRef.current;
     if (!project?.id) {
       setLoading(false);
       return;
@@ -199,7 +207,7 @@ export const CustomFrameworkOverview: React.FC<CustomFrameworkOverviewProps> = (
     } finally {
       setLoading(false);
     }
-  }, [project?.id, api, pluginKey]);
+  }, [project?.id, pluginKey]);
 
   useEffect(() => {
     loadData();
