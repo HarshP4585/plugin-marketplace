@@ -192,7 +192,7 @@ export const CustomFrameworkCards: React.FC<CustomFrameworkCardsProps> = ({
         }
         const addedArray = Array.isArray(addedRaw) ? addedRaw : [];
         const addedIds = new Set<number>(
-          addedArray.map((f: any) => f.framework_id)
+          addedArray.map((f: any) => f.id)
         );
         console.log("[CustomFrameworkCards] Added framework IDs:", addedIds);
         setAddedFrameworkIds(addedIds);
