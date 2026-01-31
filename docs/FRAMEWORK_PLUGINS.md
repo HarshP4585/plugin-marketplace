@@ -26,57 +26,115 @@ Framework plugins provide compliance frameworks that can be added to projects. T
 
 ---
 
+## Framework Types
+
+Frameworks are classified into two types based on their scope and applicability:
+
+### 🏢 Organizational Frameworks
+
+**Definition**: Frameworks that apply to the entire organization. These are managed at the org level with a single org-level project containing all organizational compliance controls.
+
+**Use Cases**:
+- Legal/regulatory requirements (GDPR, CCPA, PDPL laws)
+- Organization-wide certifications (SOC 2, ISO 27001)
+- Company-wide security standards (NIST CSF, CIS Controls)
+- Enterprise governance (Data Governance)
+
+**Behavior**:
+- One org-level project per organization
+- All organizational frameworks are enabled in this single project
+- Compliance tracked at organization level
+
+### 📁 Project Frameworks
+
+**Definition**: Frameworks that apply only to specific projects based on their characteristics. Different projects may need different frameworks.
+
+**Use Cases**:
+- PCI-DSS: Only projects handling payment card data
+- HIPAA: Only projects handling protected health information (PHI)
+- AI Ethics: Only projects using AI/ML systems
+
+**Behavior**:
+- Can be enabled per individual project
+- Projects can have different combinations of frameworks
+- Compliance tracked at project level
+
+### Setting Framework Type
+
+The framework type is configured in two places:
+
+1. **template.json** (`is_organizational` field):
+```json
+{
+  "framework": {
+    "is_organizational": true  // or false for project-level
+  }
+}
+```
+
+2. **plugins.json** (`frameworkType` field):
+```json
+{
+  "key": "soc2",
+  "frameworkType": "organizational"  // or "project"
+}
+```
+
+> **Important**: Both values should match. The `is_organizational` in template.json controls database behavior, while `frameworkType` in plugins.json controls UI display.
+
+---
+
 ## Available Frameworks
 
 ### International 🌐
 
-| Framework | Key | Description |
-|-----------|-----|-------------|
-| ISO 27001 | `iso27001` | Information security management systems |
-| PCI-DSS | `pci-dss` | Payment card data security |
-| CIS Controls v8 | `cis-controls` | Critical security controls |
-| AI Ethics | `ai-ethics` | Responsible AI governance |
-| Data Governance | `data-governance` | Enterprise data management |
+| Framework | Key | Type | Description |
+|-----------|-----|------|-------------|
+| ISO 27001 | `iso27001` | 🏢 Org | Information security management systems |
+| PCI-DSS | `pci-dss` | 📁 Project | Payment card data security |
+| CIS Controls v8 | `cis-controls` | 🏢 Org | Critical security controls |
+| AI Ethics | `ai-ethics` | 📁 Project | Responsible AI governance |
+| Data Governance | `data-governance` | 🏢 Org | Enterprise data management |
 
 ### United States 🇺🇸
 
-| Framework | Key | Description |
-|-----------|-----|-------------|
-| SOC 2 Type II | `soc2` | Trust Service Criteria |
-| HIPAA | `hipaa` | Healthcare data protection |
-| CCPA | `ccpa` | California consumer privacy |
-| NIST CSF | `nist-csf` | Cybersecurity framework |
+| Framework | Key | Type | Description |
+|-----------|-----|------|-------------|
+| SOC 2 Type II | `soc2` | 🏢 Org | Trust Service Criteria |
+| HIPAA | `hipaa` | 📁 Project | Healthcare data protection |
+| CCPA | `ccpa` | 🏢 Org | California consumer privacy |
+| NIST CSF | `nist-csf` | 🏢 Org | Cybersecurity framework |
 
 ### European Union 🇪🇺
 
-| Framework | Key | Description |
-|-----------|-----|-------------|
-| GDPR | `gdpr` | General Data Protection Regulation |
-| DORA | `dora` | Digital Operational Resilience Act |
+| Framework | Key | Type | Description |
+|-----------|-----|------|-------------|
+| GDPR | `gdpr` | 🏢 Org | General Data Protection Regulation |
+| DORA | `dora` | 🏢 Org | Digital Operational Resilience Act |
 
 ### United Arab Emirates 🇦🇪
 
-| Framework | Key | Description |
-|-----------|-----|-------------|
-| UAE PDPL | `uae-pdpl` | Personal Data Protection Law 45/2021, DIFC Regulation 10, AI Ethics Charter |
+| Framework | Key | Type | Description |
+|-----------|-----|------|-------------|
+| UAE PDPL | `uae-pdpl` | 🏢 Org | Personal Data Protection Law 45/2021, DIFC Regulation 10, AI Ethics Charter |
 
 ### Saudi Arabia 🇸🇦
 
-| Framework | Key | Description |
-|-----------|-----|-------------|
-| Saudi PDPL | `saudi-pdpl` | Personal Data Protection Law, SDAIA Ethics Principles, Generative AI Guidelines |
+| Framework | Key | Type | Description |
+|-----------|-----|------|-------------|
+| Saudi PDPL | `saudi-pdpl` | 🏢 Org | Personal Data Protection Law, SDAIA Ethics Principles, Generative AI Guidelines |
 
 ### Qatar 🇶🇦
 
-| Framework | Key | Description |
-|-----------|-----|-------------|
-| Qatar PDPL | `qatar-pdpl` | Personal Data Privacy Law 13/2016, National AI Policy |
+| Framework | Key | Type | Description |
+|-----------|-----|------|-------------|
+| Qatar PDPL | `qatar-pdpl` | 🏢 Org | Personal Data Privacy Law 13/2016, National AI Policy |
 
 ### Bahrain 🇧🇭
 
-| Framework | Key | Description |
-|-----------|-----|-------------|
-| Bahrain PDPL | `bahrain-pdpl` | Personal Data Protection Law 30/2018, CBB AI Notice, EDB AI Ethics Pledge |
+| Framework | Key | Type | Description |
+|-----------|-----|------|-------------|
+| Bahrain PDPL | `bahrain-pdpl` | 🏢 Org | Personal Data Protection Law 30/2018, CBB AI Notice, EDB AI Ethics Pledge |
 
 ---
 
@@ -113,6 +171,7 @@ plugins/
   "displayName": "SOC 2 Type II",
   "description": "SOC 2 Type II compliance framework based on Trust Service Criteria.",
   "region": "United States",
+  "frameworkType": "organizational",
   "longDescription": "SOC 2 Type II framework plugin provides comprehensive Trust Service Criteria (TSC) compliance management...",
   "version": "1.0.0",
   "author": "VerifyWise",
@@ -247,6 +306,7 @@ Create `plugins/my-framework/template.json`:
   "displayName": "My Framework",
   "description": "Brief description of the framework.",
   "region": "International",
+  "frameworkType": "organizational",
   "version": "1.0.0",
   "author": "VerifyWise",
   "category": "compliance",
@@ -351,13 +411,17 @@ cp -r plugins/my-framework /path/to/verifywise/Servers/temp/plugins/
 Before considering a framework plugin complete, verify:
 
 - [ ] `template.json` exists with valid framework structure
+- [ ] `template.json` has correct `is_organizational` value (true/false)
 - [ ] `icon.svg` exists
 - [ ] Plugin entry added to `plugins.json` with `category: "compliance"`
+- [ ] `frameworkType` set in plugins.json ("organizational" or "project")
+- [ ] `frameworkType` matches `is_organizational` in template.json
 - [ ] Plugin built with `npm run build:framework-plugins`
 - [ ] `dist/index.js` exists (created by build)
 - [ ] Plugin copied to server cache
 - [ ] Plugin installed successfully
 - [ ] **Framework appears in Settings > Custom Frameworks** (this is the real test!)
+- [ ] Framework type badge displays correctly in Plugins > Frameworks
 
 ---
 
