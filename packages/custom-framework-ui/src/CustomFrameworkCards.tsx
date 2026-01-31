@@ -205,6 +205,15 @@ export const CustomFrameworkCards: React.FC<CustomFrameworkCardsProps> = ({
     loadFrameworks();
   }, [loadFrameworks]);
 
+  // Notify parent about custom framework count (for system framework remove button logic)
+  useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent("customFrameworkCountChanged", {
+        detail: { projectId: project.id, count: addedFrameworkIds.size },
+      })
+    );
+  }, [addedFrameworkIds.size, project.id]);
+
   const isFrameworkAdded = (fw: CustomFramework): boolean => {
     return addedFrameworkIds.has(fw.id);
   };

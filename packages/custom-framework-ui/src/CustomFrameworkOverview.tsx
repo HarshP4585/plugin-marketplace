@@ -209,6 +209,10 @@ export const CustomFrameworkOverview: React.FC<CustomFrameworkOverviewProps> = (
     }
   }, [project?.id, pluginKey]);
 
+  // Use ref to avoid stale closure in event listener
+  const loadDataRef = useRef(loadData);
+  loadDataRef.current = loadData;
+
   useEffect(() => {
     loadData();
   }, [loadData]);
@@ -216,16 +220,18 @@ export const CustomFrameworkOverview: React.FC<CustomFrameworkOverviewProps> = (
   // Listen for custom framework changes from CustomFrameworkCards
   useEffect(() => {
     const handleCustomFrameworkChange = (event: CustomEvent) => {
+      console.log("[CustomFrameworkOverview] Received event:", event.detail);
       if (event.detail?.projectId === project?.id) {
-        loadData();
+        console.log("[CustomFrameworkOverview] Reloading data...");
+        loadDataRef.current();
       }
     };
 
-    window.addEventListener("customFrameworkChanged" as any, handleCustomFrameworkChange as EventListener);
+    window.addEventListener("customFrameworkChanged", handleCustomFrameworkChange as EventListener);
     return () => {
-      window.removeEventListener("customFrameworkChanged" as any, handleCustomFrameworkChange as EventListener);
+      window.removeEventListener("customFrameworkChanged", handleCustomFrameworkChange as EventListener);
     };
-  }, [loadData, project?.id]);
+  }, [project?.id]);
 
   // Don't render if loading or no frameworks
   if (loading || frameworks.length === 0) {

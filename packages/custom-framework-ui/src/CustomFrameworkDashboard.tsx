@@ -358,6 +358,10 @@ export const CustomFrameworkDashboard: React.FC<CustomFrameworkDashboardProps> =
     }
   }, [project?.id, pluginKey]);
 
+  // Use ref to avoid stale closure in event listener
+  const loadDataRef = useRef(loadData);
+  loadDataRef.current = loadData;
+
   useEffect(() => {
     loadData();
   }, [loadData]);
@@ -365,16 +369,18 @@ export const CustomFrameworkDashboard: React.FC<CustomFrameworkDashboardProps> =
   // Listen for custom framework changes from CustomFrameworkCards
   useEffect(() => {
     const handleCustomFrameworkChange = (event: CustomEvent) => {
+      console.log("[CustomFrameworkDashboard] Received event:", event.detail);
       if (event.detail?.projectId === project?.id) {
-        loadData();
+        console.log("[CustomFrameworkDashboard] Reloading data...");
+        loadDataRef.current();
       }
     };
 
-    window.addEventListener("customFrameworkChanged" as any, handleCustomFrameworkChange as EventListener);
+    window.addEventListener("customFrameworkChanged", handleCustomFrameworkChange as EventListener);
     return () => {
-      window.removeEventListener("customFrameworkChanged" as any, handleCustomFrameworkChange as EventListener);
+      window.removeEventListener("customFrameworkChanged", handleCustomFrameworkChange as EventListener);
     };
-  }, [loadData, project?.id]);
+  }, [project?.id]);
 
   // Helper functions matching the organizational dashboard
   const calculateProgress = (done: number, total: number) => {
