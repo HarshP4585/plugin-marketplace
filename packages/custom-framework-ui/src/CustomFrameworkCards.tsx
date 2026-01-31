@@ -12,17 +12,11 @@ import {
   Typography,
   Button,
   CircularProgress,
-  Divider,
-  Chip,
   Stack,
   Dialog,
 } from "@mui/material";
 import { Check as CheckIcon, FileJson } from "lucide-react";
-import {
-  colors,
-  fontSizes,
-  borderColors,
-} from "./theme";
+import { colors } from "./theme";
 
 interface CustomFramework {
   id: number;
