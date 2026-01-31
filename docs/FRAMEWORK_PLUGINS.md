@@ -5,12 +5,13 @@ This guide covers the compliance framework plugin system in VerifyWise.
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Available Frameworks](#available-frameworks)
-3. [Framework Plugin Architecture](#framework-plugin-architecture)
-4. [Adding a New Framework](#adding-a-new-framework)
-5. [Region System](#region-system)
-6. [UI Integration](#ui-integration)
-7. [Custom Framework Import Package](#custom-framework-import-package)
+2. [Framework Types](#framework-types)
+3. [Available Frameworks](#available-frameworks)
+4. [Framework Plugin Architecture](#framework-plugin-architecture)
+5. [Adding a New Framework](#adding-a-new-framework)
+6. [Region System](#region-system)
+7. [UI Integration](#ui-integration)
+8. [Custom Framework Import Package](#custom-framework-import-package)
 
 ---
 

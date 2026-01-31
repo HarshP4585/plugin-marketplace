@@ -401,7 +401,8 @@
             }
           }
         ]
-      }
+      },
+      "frameworkType": "organizational"
     },
     {
       "key": "gdpr",
@@ -516,7 +517,8 @@
             }
           }
         ]
-      }
+      },
+      "frameworkType": "organizational"
     },
     {
       "key": "hipaa",
@@ -631,7 +633,8 @@
             }
           }
         ]
-      }
+      },
+      "frameworkType": "project"
     },
     {
       "key": "pci-dss",
@@ -746,7 +749,8 @@
             }
           }
         ]
-      }
+      },
+      "frameworkType": "project"
     },
     {
       "key": "ccpa",
@@ -861,7 +865,8 @@
             }
           }
         ]
-      }
+      },
+      "frameworkType": "organizational"
     },
     {
       "key": "dora",
@@ -976,7 +981,8 @@
             }
           }
         ]
-      }
+      },
+      "frameworkType": "organizational"
     },
     {
       "key": "nist-csf",
@@ -1091,7 +1097,8 @@
             }
           }
         ]
-      }
+      },
+      "frameworkType": "organizational"
     },
     {
       "key": "cis-controls",
@@ -1206,7 +1213,8 @@
             }
           }
         ]
-      }
+      },
+      "frameworkType": "organizational"
     },
     {
       "key": "iso27001",
@@ -1321,7 +1329,8 @@
             }
           }
         ]
-      }
+      },
+      "frameworkType": "organizational"
     },
     {
       "key": "ai-ethics",
@@ -1436,7 +1445,8 @@
             }
           }
         ]
-      }
+      },
+      "frameworkType": "project"
     },
     {
       "key": "data-governance",
@@ -1551,7 +1561,8 @@
             }
           }
         ]
-      }
+      },
+      "frameworkType": "organizational"
     },
     {
       "key": "uae-pdpl",
@@ -1668,7 +1679,8 @@
             }
           }
         ]
-      }
+      },
+      "frameworkType": "organizational"
     },
     {
       "key": "saudi-pdpl",
@@ -1785,7 +1797,8 @@
             }
           }
         ]
-      }
+      },
+      "frameworkType": "organizational"
     },
     {
       "key": "qatar-pdpl",
@@ -1902,7 +1915,8 @@
             }
           }
         ]
-      }
+      },
+      "frameworkType": "organizational"
     },
     {
       "key": "bahrain-pdpl",
@@ -2019,7 +2033,8 @@
             }
           }
         ]
-      }
+      },
+      "frameworkType": "organizational"
     }
   ],
   "categories": [
