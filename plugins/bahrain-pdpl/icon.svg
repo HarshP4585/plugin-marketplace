@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Background with Bahrain red tint -->
+  <rect width="48" height="48" rx="10" fill="#FEF2F2"/>
+  <!-- Shield shape with red color -->
+  <path d="M24 6L38 12V22C38 31.39 32.22 40.01 24 43C15.78 40.01 10 31.39 10 22V12L24 6Z"
+        fill="#FEE2E2" stroke="#DC2626" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Pearl/circle representing Bahrain (pearl diving heritage) -->
+  <circle cx="24" cy="20" r="6" fill="white" stroke="#DC2626" stroke-width="2"/>
+  <circle cx="24" cy="20" r="2" fill="#DC2626"/>
+  <!-- Financial/banking bars (Open Banking reference) -->
+  <rect x="16" y="29" width="4" height="8" rx="1" fill="#DC2626"/>
+  <rect x="22" y="31" width="4" height="6" rx="1" fill="#DC2626"/>
+  <rect x="28" y="27" width="4" height="10" rx="1" fill="#DC2626"/>
+  <!-- Connection line representing data flow -->
+  <path d="M18 29L24 31L30 27" stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 2"/>
+</svg>

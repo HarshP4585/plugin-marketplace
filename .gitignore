@@ -13,6 +13,9 @@ build/
 # Allow plugin UI dist bundles (these need to be served)
 !plugins/**/ui/dist/
 !plugins/**/ui/dist/**
+# Allow framework plugin bundled dist files
+!plugins/*/dist/
+!plugins/*/dist/**
 
 # TypeScript cache
 *.tsbuildinfo
