@@ -2035,6 +2035,124 @@
         ]
       },
       "frameworkType": "organizational"
+    },
+    {
+      "key": "quebec-law25",
+      "name": "Quebec Law 25 (Bill 64)",
+      "displayName": "Quebec Law 25",
+      "description": "Quebec's modernized privacy law (Bill 64) for protection of personal information in the private sector.",
+      "region": "Canada",
+      "longDescription": "Quebec Law 25 (Bill 64) framework plugin provides comprehensive coverage of Quebec's Act respecting the protection of personal information in the private sector, as modernized in 2021. Includes privacy officer requirements, consent obligations, individual rights (access, rectification, portability, de-indexation), data breach notification (15-day requirement), cross-border transfer assessments, and automated decision-making transparency. Phased implementation from 2022-2024.",
+      "version": "1.0.0",
+      "author": "VerifyWise",
+      "category": "compliance",
+      "iconUrl": "plugins/quebec-law25/icon.svg",
+      "documentationUrl": "https://docs.verifywise.com/frameworks/quebec-law25",
+      "supportUrl": "https://support.verifywise.com",
+      "isOfficial": true,
+      "isPublished": true,
+      "requiresConfiguration": false,
+      "installationType": "tenant_scoped",
+      "features": [
+        {
+          "name": "Privacy Officer",
+          "description": "Privacy officer designation and governance requirements",
+          "displayOrder": 1
+        },
+        {
+          "name": "Individual Rights",
+          "description": "Access, rectification, portability, and de-indexation rights",
+          "displayOrder": 2
+        },
+        {
+          "name": "Breach Notification",
+          "description": "Privacy incident reporting and 15-day notification requirements",
+          "displayOrder": 3
+        },
+        {
+          "name": "Auto-Import",
+          "description": "Framework automatically imported on plugin installation",
+          "displayOrder": 4
+        }
+      ],
+      "tags": [
+        "quebec",
+        "law-25",
+        "bill-64",
+        "privacy",
+        "canada",
+        "data-protection",
+        "compliance"
+      ],
+      "pluginPath": "plugins/quebec-law25",
+      "entryPoint": "dist/index.js",
+      "dependencies": {},
+      "ui": {
+        "bundleUrl": "/api/plugins/quebec-law25/ui/dist/index.esm.js",
+        "globalName": "PluginCustomFrameworkImport",
+        "slots": [
+          {
+            "slotId": "page.settings.tabs",
+            "componentName": "CustomFrameworkConfig",
+            "renderType": "tab",
+            "props": {
+              "label": "Custom Frameworks",
+              "icon": "FileJson",
+              "value": "custom-frameworks",
+              "pluginKey": "quebec-law25"
+            }
+          },
+          {
+            "slotId": "modal.framework.selection",
+            "componentName": "CustomFrameworkCards",
+            "renderType": "raw",
+            "props": {
+              "pluginKey": "quebec-law25"
+            }
+          },
+          {
+            "slotId": "page.controls.custom-framework",
+            "componentName": "CustomFrameworkControls",
+            "renderType": "raw",
+            "props": {
+              "pluginKey": "quebec-law25"
+            }
+          },
+          {
+            "slotId": "page.project-controls.custom-framework",
+            "componentName": "CustomFrameworkControls",
+            "renderType": "raw",
+            "props": {
+              "pluginKey": "quebec-law25"
+            }
+          },
+          {
+            "slotId": "page.framework-dashboard.custom",
+            "componentName": "CustomFrameworkDashboard",
+            "renderType": "raw",
+            "props": {
+              "pluginKey": "quebec-law25"
+            }
+          },
+          {
+            "slotId": "page.org-framework.management",
+            "componentName": "CustomFrameworkCards",
+            "renderType": "raw",
+            "props": {
+              "pluginKey": "quebec-law25"
+            }
+          },
+          {
+            "slotId": "page.project-overview.custom-framework",
+            "componentName": "CustomFrameworkOverview",
+            "renderType": "raw",
+            "props": {
+              "pluginKey": "quebec-law25"
+            }
+          }
+        ]
+      },
+      "frameworkType": "organizational"
     }
   ],
   "categories": [
