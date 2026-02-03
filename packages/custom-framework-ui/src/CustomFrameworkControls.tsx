@@ -57,6 +57,9 @@ interface CustomFrameworkControlsProps {
   pluginKey?: string;
 }
 
+// localStorage key for custom framework navigation (set by CustomFrameworkDashboard)
+const CUSTOM_FRAMEWORK_SELECTED_KEY = "verifywise_custom_framework_selected";
+
 // Styles matching the app's ButtonToggle exactly
 const toggleContainerStyle = (height: number) => ({
   position: "relative",
@@ -321,6 +324,31 @@ export const CustomFrameworkControls: React.FC<CustomFrameworkControlsProps> = (
       setSelectedCustomFramework(customFrameworks[0].framework_id);
     }
   }, [builtInFrameworks.length, customFrameworks, isCustomSelected]);
+
+  // Check localStorage for custom framework selection from dashboard navigation
+  useEffect(() => {
+    if (customFrameworks.length === 0) return;
+
+    try {
+      const storedSelection = localStorage.getItem(CUSTOM_FRAMEWORK_SELECTED_KEY);
+      if (storedSelection) {
+        const { frameworkId } = JSON.parse(storedSelection);
+        // Check if this framework exists in our loaded custom frameworks
+        const frameworkExists = customFrameworks.some(
+          (fw) => fw.framework_id === frameworkId
+        );
+        if (frameworkExists) {
+          console.log("[CustomFrameworkControls] Auto-selecting custom framework from dashboard navigation:", frameworkId);
+          setIsCustomSelected(true);
+          setSelectedCustomFramework(frameworkId);
+        }
+        // Clear the localStorage after reading to prevent re-selection on refresh
+        localStorage.removeItem(CUSTOM_FRAMEWORK_SELECTED_KEY);
+      }
+    } catch (err) {
+      console.log("[CustomFrameworkControls] Error reading stored framework selection:", err);
+    }
+  }, [customFrameworks]);
 
   const handleBuiltInSelect = (index: number) => {
     setIsCustomSelected(false);

@@ -120,6 +120,9 @@ interface ProgressData {
   };
 }
 
+// localStorage key for expanded category (set by CustomFrameworkDashboard)
+const CUSTOM_FRAMEWORK_EXPANDED_CATEGORY_KEY = "verifywise_custom_framework_expanded_category";
+
 // Styles matching the app's ControlsTable
 const tableStyles = {
   tableHead: {
@@ -171,6 +174,7 @@ export const CustomFrameworkViewer: React.FC<CustomFrameworkViewerProps> = ({
   // Drawer state
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Level2Item | null>(null);
+
 
   // Helper to get auth token from localStorage (redux-persist)
   const getAuthToken = (): string | null => {
@@ -276,6 +280,36 @@ export const CustomFrameworkViewer: React.FC<CustomFrameworkViewerProps> = ({
   useEffect(() => {
     loadFrameworkData();
   }, [loadFrameworkData]);
+
+  // Check localStorage for category to auto-expand (from dashboard navigation)
+  useEffect(() => {
+    if (!data?.structure) return;
+
+    try {
+      const storedCategoryId = localStorage.getItem(CUSTOM_FRAMEWORK_EXPANDED_CATEGORY_KEY);
+      if (storedCategoryId) {
+        const categoryId = parseInt(storedCategoryId, 10);
+        // Find the index of the category in the structure
+        const categoryIndex = data.structure.findIndex((level1) => level1.id === categoryId);
+        if (categoryIndex !== -1) {
+          setExpandedLevel1(categoryIndex);
+          // Scroll to the expanded accordion after a delay (to allow expansion animation and DOM update)
+          setTimeout(() => {
+            // Find the accordion by data attribute (more reliable than refs)
+            const accordionElement = document.querySelector(`[data-accordion-index="${categoryIndex}"]`);
+            console.log("[CustomFrameworkViewer] Scrolling to accordion index:", categoryIndex, "element:", accordionElement);
+            if (accordionElement) {
+              accordionElement.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+          }, 500);
+        }
+        // Clear the localStorage after reading
+        localStorage.removeItem(CUSTOM_FRAMEWORK_EXPANDED_CATEGORY_KEY);
+      }
+    } catch (err) {
+      console.log("[CustomFrameworkViewer] Error reading stored category:", err);
+    }
+  }, [data?.structure]);
 
   const handleRefresh = useCallback(() => {
     loadFrameworkData();
@@ -446,6 +480,7 @@ export const CustomFrameworkViewer: React.FC<CustomFrameworkViewerProps> = ({
         return (
           <Accordion
             key={level1.id}
+            data-accordion-index={idx}
             expanded={isExpanded}
             onChange={() => setExpandedLevel1(isExpanded ? null : idx)}
             sx={{
