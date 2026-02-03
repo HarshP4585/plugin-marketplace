@@ -22,6 +22,7 @@ import {
   CircleDotDashed,
   CircleCheck,
   FolderOpen,
+  ChevronRight,
 } from "lucide-react";
 
 interface CustomFramework {
@@ -84,6 +85,8 @@ interface CustomFrameworkDashboardProps {
   frameworkName?: string;
   /** Plugin key for API routing (defaults to 'custom-framework-import') */
   pluginKey?: string;
+  /** Navigation callback for when user clicks on a category card */
+  onNavigate?: (frameworkId: number, frameworkName: string) => void;
 }
 
 // Card styles matching the organizational frameworks dashboard
@@ -144,6 +147,9 @@ const getStatusColor = (status: string): string => {
   return "#9CA3AF"; // Not started / default
 };
 
+// localStorage key for custom framework navigation
+const CUSTOM_FRAMEWORK_SELECTED_KEY = "verifywise_custom_framework_selected";
+
 export const CustomFrameworkDashboard: React.FC<CustomFrameworkDashboardProps> = ({
   project,
   apiServices,
@@ -151,6 +157,7 @@ export const CustomFrameworkDashboard: React.FC<CustomFrameworkDashboardProps> =
   frameworkId: propFrameworkId,
   frameworkName: _propFrameworkName,
   pluginKey,
+  onNavigate,
 }) => {
   const [loading, setLoading] = useState(true);
   const [frameworks, setFrameworks] = useState<CustomFramework[]>([]);
@@ -444,6 +451,23 @@ export const CustomFrameworkDashboard: React.FC<CustomFrameworkDashboardProps> =
     ));
   };
 
+  // Handle navigation from dashboard cards to controls page
+  const handleNavigateToControls = useCallback((fwId: number, fwName: string) => {
+    // Store the selected custom framework in localStorage
+    localStorage.setItem(CUSTOM_FRAMEWORK_SELECTED_KEY, JSON.stringify({
+      frameworkId: fwId,
+      frameworkName: fwName,
+    }));
+
+    // If parent provided onNavigate, use it
+    if (onNavigate) {
+      onNavigate(fwId, fwName);
+    } else {
+      // Default navigation to controls page
+      window.location.href = "/framework/controls";
+    }
+  }, [onNavigate]);
+
   // Render categories overview for a framework
   const renderCategoriesOverview = (frameworkId: number) => {
     const details = frameworkDetails.get(frameworkId);
@@ -468,6 +492,12 @@ export const CustomFrameworkDashboard: React.FC<CustomFrameworkDashboardProps> =
     }
 
     const level1Name = fw?.level_1_name || "Categories";
+
+    const handleCardClick = () => {
+      if (fw) {
+        handleNavigateToControls(fw.framework_id, fw.name);
+      }
+    };
 
     return (
       <Stack spacing={2}>
@@ -535,6 +565,21 @@ export const CustomFrameworkDashboard: React.FC<CustomFrameworkDashboardProps> =
                     >
                       {category.name}
                     </Typography>
+                  </Box>
+                  <Box
+                    onClick={handleCardClick}
+                    sx={{
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      p: "4px",
+                      borderRadius: "4px",
+                      "&:hover": {
+                        backgroundColor: "rgba(0, 0, 0, 0.04)",
+                      },
+                    }}
+                  >
+                    <ChevronRight size={16} style={{ color: "#666666" }} />
                   </Box>
                 </Box>
 
