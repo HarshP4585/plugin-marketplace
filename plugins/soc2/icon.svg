@@ -1,5 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-  <rect width="48" height="48" rx="10" fill="#F0FDF4"/>
-  <path d="M24 8L38 15V24C38 32.28 32.11 39.95 24 42C15.89 39.95 10 32.28 10 24V15L24 8Z" fill="#DCFCE7" stroke="#16A34A" stroke-width="2.5" stroke-linejoin="round"/>
-  <path d="M17 25L22 30L31 21" stroke="#16A34A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Background circle - deep blue for trust -->
+  <circle cx="32" cy="32" r="30" fill="#1E40AF"/>
+
+  <!-- Shield shape for security -->
+  <path d="M32 10 L48 18 L48 32 C48 42 40 50 32 54 C24 50 16 42 16 32 L16 18 Z" fill="#3B82F6" stroke="#FFFFFF" stroke-width="1.5"/>
+
+  <!-- Inner shield highlight -->
+  <path d="M32 14 L44 20 L44 32 C44 40 38 46 32 50 C26 46 20 40 20 32 L20 20 Z" fill="#1E40AF"/>
+
+  <!-- Checkmark for compliance -->
+  <path d="M24 32 L29 37 L40 26" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- SOC 2 text -->
+  <text x="32" y="58" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#FFFFFF" text-anchor="middle">SOC 2</text>
 </svg>

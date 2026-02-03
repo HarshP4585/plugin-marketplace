@@ -94,6 +94,7 @@ The framework type is configured in two places:
 | PCI-DSS | `pci-dss` | 📁 Project | Payment card data security |
 | CIS Controls v8 | `cis-controls` | 🏢 Org | Critical security controls |
 | AI Ethics | `ai-ethics` | 📁 Project | Responsible AI governance |
+| OECD AI Principles | `oecd-ai-principles` | 📁 Project | G20-endorsed international AI standard |
 | Data Governance | `data-governance` | 🏢 Org | Enterprise data management |
 
 ### United States 🇺🇸
@@ -104,6 +105,16 @@ The framework type is configured in two places:
 | HIPAA | `hipaa` | 📁 Project | Healthcare data protection |
 | CCPA | `ccpa` | 🏢 Org | California consumer privacy |
 | NIST CSF | `nist-csf` | 🏢 Org | Cybersecurity framework |
+| Texas AI Act | `texas-ai-act` | 📁 Project | Texas Responsible AI Governance Act (TRAIGA) |
+| Colorado AI Act | `colorado-ai-act` | 📁 Project | Colorado AI Act for algorithmic discrimination prevention |
+| FTC AI Guidelines | `ftc-ai-guidelines` | 📁 Project | Federal Trade Commission AI guidance for consumer protection |
+| NYC Local Law 144 | `nyc-local-law-144` | 📁 Project | Automated employment decision tools (AEDT) bias audits |
+
+### Canada 🇨🇦
+
+| Framework | Key | Type | Description |
+|-----------|-----|------|-------------|
+| Quebec Law 25 | `quebec-law25` | 🏢 Org | Quebec Bill 64 privacy protection |
 
 ### European Union 🇪🇺
 
@@ -111,6 +122,7 @@ The framework type is configured in two places:
 |-----------|-----|------|-------------|
 | GDPR | `gdpr` | 🏢 Org | General Data Protection Regulation |
 | DORA | `dora` | 🏢 Org | Digital Operational Resilience Act |
+| ALTAI | `altai` | 📁 Project | Assessment List for Trustworthy AI (EU Commission) |
 
 ### United Arab Emirates 🇦🇪
 
@@ -151,8 +163,8 @@ plugins/
     ├── dist/
     │   └── index.js          # Built backend (auto-generated)
     └── ui/
-        └── dist/             # Symlink to shared custom-framework-import UI
-            └── index.esm.js
+        └── dist/             # Copied from packages/custom-framework-ui/dist/
+            └── index.esm.js  # Shared UI bundle (~1.1MB)
 ```
 
 > **CRITICAL**: The `template.json` file is **REQUIRED** for framework plugins. Without it:
@@ -379,13 +391,17 @@ The build script automatically:
 1. Reads your `template.json`
 2. Generates `index.ts` from it
 3. Compiles to `dist/index.js`
-4. Creates symlink to shared UI
+4. Copies shared UI bundle from `packages/custom-framework-ui/dist/` to `ui/dist/`
 
 ```bash
 # Build a specific framework plugin
 npm run build:framework-plugins -- my-framework
 
 # Or build all framework plugins
+npm run build:framework-plugins
+
+# If shared UI code changed, rebuild it first
+npm run build:custom-framework-ui
 npm run build:framework-plugins
 ```
 
@@ -427,18 +443,23 @@ Before considering a framework plugin complete, verify:
 
 ## Shared UI Components
 
-Framework plugins use the shared `custom-framework-ui` package:
+All framework plugins share the same UI bundle from `packages/custom-framework-ui/`. This avoids duplicating ~1.1MB of React code for each plugin.
+
+### Building the Shared UI
 
 ```bash
-cd packages/custom-framework-ui
-npm install
-npm run build
+npm run build:custom-framework-ui
 ```
 
-Copy the built UI to your plugin:
+This builds to `packages/custom-framework-ui/dist/index.esm.js`.
+
+### Distributing to Plugins
+
+The `build:framework-plugins` script automatically copies the shared UI to each plugin's `ui/dist/` folder. You don't need to manually copy files.
 
 ```bash
-cp -r packages/custom-framework-ui/dist/* plugins/my-framework/ui/dist/
+# Rebuilds all framework plugins AND copies the shared UI
+npm run build:framework-plugins
 ```
 
 ---
@@ -465,10 +486,13 @@ const regionFlags: Record<string, string> = {
   "India": "🇮🇳",
   "Japan": "🇯🇵",
   "Brazil": "🇧🇷",
+  "Mexico": "🇲🇽",
   "United Arab Emirates": "🇦🇪",
   "Saudi Arabia": "🇸🇦",
   "Qatar": "🇶🇦",
   "Bahrain": "🇧🇭",
+  "Kuwait": "🇰🇼",
+  "Oman": "🇴🇲",
   "Other": "📋",
 };
 ```

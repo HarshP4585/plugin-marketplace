@@ -17,6 +17,7 @@ This repository contains the plugin marketplace for VerifyWise, including plugin
 ```
 plugin-marketplace/
 ├── plugins.json              # Plugin registry (marketplace manifest)
+├── package.json              # Build scripts
 ├── plugins/                  # Plugin implementations
 │   ├── mlflow/              # MLflow integration plugin
 │   │   ├── index.ts         # Backend plugin code
@@ -27,25 +28,30 @@ plugin-marketplace/
 │   │       ├── vite.config.ts
 │   │       └── package.json
 │   ├── azure-ai-foundry/    # Azure AI Foundry plugin
-│   │   ├── index.ts
-│   │   ├── package.json
-│   │   ├── README.md
-│   │   └── ui/
 │   ├── risk-import/         # Risk Import plugin
-│   │   ├── index.ts
-│   │   ├── package.json
-│   │   ├── README.md
-│   │   └── ui/
-│   ├── custom-framework-import/  # Custom Framework Import plugin
-│   │   ├── index.ts         # Backend with database tables
-│   │   ├── package.json
-│   │   ├── README.md        # Comprehensive documentation
-│   │   └── ui/              # Full UI with multiple components
-│   └── slack/               # Slack integration plugin
-│       ├── index.ts
-│       ├── package.json
-│       ├── README.md
-│       └── ui/
+│   ├── slack/               # Slack integration plugin
+│   │
+│   │ # Framework plugins (compliance frameworks)
+│   ├── gdpr/                # GDPR framework
+│   │   ├── template.json    # Framework definition (chapters, sections)
+│   │   ├── index.ts         # Auto-generated from template
+│   │   ├── dist/            # Compiled backend
+│   │   └── ui/dist/         # Shared UI bundle (copied from packages/)
+│   ├── soc2/
+│   ├── hipaa/
+│   └── ...                  # 18 framework plugins total
+│
+├── packages/                 # Shared packages
+│   ├── custom-framework-ui/  # Shared UI for all framework plugins
+│   │   ├── src/             # React components
+│   │   ├── dist/            # Compiled bundle (index.esm.js)
+│   │   └── vite.config.ts
+│   └── custom-framework-base/ # Shared backend for framework plugins
+│
+├── scripts/                  # Build scripts
+│   ├── build-framework-plugins.js  # Builds all framework plugins
+│   └── add-framework.js     # Helper to add new frameworks
+│
 ├── docs/                    # Documentation
 │   ├── PLUGIN_DEVELOPMENT_GUIDE.md
 │   ├── PLUGIN_UI_GUIDE.md
@@ -265,19 +271,46 @@ PLUGIN_MARKETPLACE_URL=https://raw.githubusercontent.com/org/plugin-marketplace/
 
 ### Framework Plugins
 
-Framework plugins provide compliance frameworks grouped by geographic region.
+Framework plugins provide compliance frameworks grouped by geographic region. All framework plugins share a common UI bundle from `packages/custom-framework-ui/`.
 
 | Region | Frameworks |
 |--------|------------|
-| 🌐 **International** | ISO 27001, PCI-DSS, CIS Controls v8, AI Ethics, Data Governance |
-| 🇺🇸 **United States** | SOC 2 Type II, HIPAA, CCPA, NIST CSF |
-| 🇪🇺 **European Union** | GDPR, DORA |
-| 🇦🇪 **United Arab Emirates** | UAE PDPL (PDPL 45/2021, DIFC Regulation 10, AI Ethics Charter) |
-| 🇸🇦 **Saudi Arabia** | Saudi PDPL (PDPL, SDAIA Ethics Principles, Generative AI Guidelines) |
-| 🇶🇦 **Qatar** | Qatar PDPL (Law 13/2016, National AI Policy) |
-| 🇧🇭 **Bahrain** | Bahrain PDPL (PDPL 30/2018, CBB AI Notice, EDB AI Ethics Pledge) |
+| 🌐 **International** | ISO 27001, PCI-DSS, CIS Controls v8, AI Ethics, Data Governance, OECD AI Principles |
+| 🇺🇸 **United States** | SOC 2 Type II, HIPAA, CCPA, NIST CSF, Texas AI Act, Colorado AI Act, FTC AI Guidelines, NYC Local Law 144 |
+| 🇨🇦 **Canada** | Quebec Law 25 |
+| 🇪🇺 **European Union** | GDPR, DORA, ALTAI |
+| 🇦🇪 **United Arab Emirates** | UAE PDPL |
+| 🇸🇦 **Saudi Arabia** | Saudi PDPL |
+| 🇶🇦 **Qatar** | Qatar PDPL |
+| 🇧🇭 **Bahrain** | Bahrain PDPL |
 
-See [Framework Plugins Guide](docs/FRAMEWORK_PLUGINS.md) for details on adding new frameworks.
+#### Building Framework Plugins
+
+```bash
+# Build shared UI (if UI code changed)
+npm run build:custom-framework-ui
+
+# Build all framework plugins (compiles backend + copies UI bundle)
+npm run build:framework-plugins
+
+# Or build everything at once
+npm run build:all
+```
+
+The build script:
+1. Auto-discovers framework plugins by looking for `template.json` files
+2. Generates `index.ts` from each `template.json`
+3. Compiles backend to `dist/index.js`
+4. Copies shared UI from `packages/custom-framework-ui/dist/` to each plugin's `ui/dist/`
+
+#### Adding a New Framework
+
+1. Create `plugins/<framework-key>/template.json` with framework definition
+2. Run `npm run build:framework-plugins`
+3. Add entry to `plugins.json`
+4. Commit and push (including `ui/dist/` folder)
+
+See [Framework Plugins Guide](docs/FRAMEWORK_PLUGINS.md) for details.
 
 ### Framework Plugin Structure
 
