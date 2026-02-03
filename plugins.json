@@ -1337,6 +1337,125 @@
       "frameworkType": "project"
     },
     {
+      "key": "nyc-local-law-144",
+      "name": "NYC Local Law 144",
+      "displayName": "NYC Local Law 144",
+      "description": "New York City Local Law 144 compliance framework for automated employment decision tools (AEDTs) requiring bias audits and candidate notifications.",
+      "region": "United States",
+      "longDescription": "NYC Local Law 144, effective July 5, 2023, regulates the use of automated employment decision tools (AEDTs) in hiring and promotion decisions. This framework covers AEDT identification, annual bias audit requirements, public disclosure of audit results, candidate notice requirements, data privacy, vendor management, and governance structures.",
+      "version": "1.0.0",
+      "author": "VerifyWise",
+      "category": "compliance",
+      "iconUrl": "plugins/nyc-local-law-144/icon.svg",
+      "documentationUrl": "https://docs.verifywise.com/frameworks/nyc-local-law-144",
+      "supportUrl": "https://support.verifywise.com",
+      "isOfficial": true,
+      "isPublished": true,
+      "requiresConfiguration": false,
+      "installationType": "tenant_scoped",
+      "features": [
+        {
+          "name": "Bias Audit Compliance",
+          "description": "Annual independent bias audit requirements",
+          "displayOrder": 1
+        },
+        {
+          "name": "Candidate Notices",
+          "description": "Required notices 10 days before AEDT use",
+          "displayOrder": 2
+        },
+        {
+          "name": "Public Disclosure",
+          "description": "Website publication of audit results",
+          "displayOrder": 3
+        },
+        {
+          "name": "Auto-Import",
+          "description": "Framework automatically imported on plugin installation",
+          "displayOrder": 4
+        }
+      ],
+      "tags": [
+        "nyc",
+        "local-law-144",
+        "aedt",
+        "hiring-ai",
+        "bias-audit",
+        "employment",
+        "united-states",
+        "compliance"
+      ],
+      "pluginPath": "plugins/nyc-local-law-144",
+      "entryPoint": "dist/index.js",
+      "dependencies": {},
+      "ui": {
+        "bundleUrl": "/api/plugins/nyc-local-law-144/ui/dist/index.esm.js",
+        "globalName": "PluginCustomFrameworkImport",
+        "slots": [
+          {
+            "slotId": "page.settings.tabs",
+            "componentName": "CustomFrameworkConfig",
+            "renderType": "tab",
+            "props": {
+              "label": "Custom Frameworks",
+              "icon": "FileJson",
+              "value": "custom-frameworks",
+              "pluginKey": "nyc-local-law-144"
+            }
+          },
+          {
+            "slotId": "modal.framework.selection",
+            "componentName": "CustomFrameworkCards",
+            "renderType": "raw",
+            "props": {
+              "pluginKey": "nyc-local-law-144"
+            }
+          },
+          {
+            "slotId": "page.controls.custom-framework",
+            "componentName": "CustomFrameworkControls",
+            "renderType": "raw",
+            "props": {
+              "pluginKey": "nyc-local-law-144"
+            }
+          },
+          {
+            "slotId": "page.project-controls.custom-framework",
+            "componentName": "CustomFrameworkControls",
+            "renderType": "raw",
+            "props": {
+              "pluginKey": "nyc-local-law-144"
+            }
+          },
+          {
+            "slotId": "page.framework-dashboard.custom",
+            "componentName": "CustomFrameworkDashboard",
+            "renderType": "raw",
+            "props": {
+              "pluginKey": "nyc-local-law-144"
+            }
+          },
+          {
+            "slotId": "page.org-framework.management",
+            "componentName": "CustomFrameworkCards",
+            "renderType": "raw",
+            "props": {
+              "pluginKey": "nyc-local-law-144"
+            }
+          },
+          {
+            "slotId": "page.project-overview.custom-framework",
+            "componentName": "CustomFrameworkOverview",
+            "renderType": "raw",
+            "props": {
+              "pluginKey": "nyc-local-law-144"
+            }
+          }
+        ]
+      },
+      "frameworkType": "project"
+    },
+    {
       "key": "cis-controls",
       "name": "CIS Controls v8",
       "displayName": "CIS Controls v8",

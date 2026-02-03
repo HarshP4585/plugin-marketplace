@@ -94,6 +94,7 @@ The framework type is configured in two places:
 | PCI-DSS | `pci-dss` | 📁 Project | Payment card data security |
 | CIS Controls v8 | `cis-controls` | 🏢 Org | Critical security controls |
 | AI Ethics | `ai-ethics` | 📁 Project | Responsible AI governance |
+| OECD AI Principles | `oecd-ai-principles` | 📁 Project | G20-endorsed international AI standard |
 | Data Governance | `data-governance` | 🏢 Org | Enterprise data management |
 
 ### United States 🇺🇸
@@ -107,6 +108,7 @@ The framework type is configured in two places:
 | Texas AI Act | `texas-ai-act` | 📁 Project | Texas Responsible AI Governance Act (TRAIGA) |
 | Colorado AI Act | `colorado-ai-act` | 📁 Project | Colorado AI Act for algorithmic discrimination prevention |
 | FTC AI Guidelines | `ftc-ai-guidelines` | 📁 Project | Federal Trade Commission AI guidance for consumer protection |
+| NYC Local Law 144 | `nyc-local-law-144` | 📁 Project | Automated employment decision tools (AEDT) bias audits |
 
 ### Canada 🇨🇦
 

@@ -275,8 +275,8 @@ Framework plugins provide compliance frameworks grouped by geographic region. Al
 
 | Region | Frameworks |
 |--------|------------|
-| 🌐 **International** | ISO 27001, PCI-DSS, CIS Controls v8, AI Ethics, Data Governance |
-| 🇺🇸 **United States** | SOC 2 Type II, HIPAA, CCPA, NIST CSF, Texas AI Act, Colorado AI Act, FTC AI Guidelines |
+| 🌐 **International** | ISO 27001, PCI-DSS, CIS Controls v8, AI Ethics, Data Governance, OECD AI Principles |
+| 🇺🇸 **United States** | SOC 2 Type II, HIPAA, CCPA, NIST CSF, Texas AI Act, Colorado AI Act, FTC AI Guidelines, NYC Local Law 144 |
 | 🇨🇦 **Canada** | Quebec Law 25 |
 | 🇪🇺 **European Union** | GDPR, DORA, ALTAI |
 | 🇦🇪 **United Arab Emirates** | UAE PDPL |
