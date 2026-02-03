@@ -118,27 +118,9 @@
         "order_no": 2,
         "items": [
           {
-            "title": "Art. 2.1 - Consent Principles",
-            "description": "Obtain consent that is manifest, free, enlightened, and given for specific purposes",
-            "order_no": 1,
-            "summary": "Consent must be clear (manifest), voluntary (free), informed (enlightened), and purpose-specific. Bundled consent is prohibited. Consent requests must be in clear and simple language",
-            "questions": [
-              "Is consent obtained before or at the time of collection?",
-              "Is consent request presented in clear and simple language?",
-              "Is consent purpose-specific and not bundled?",
-              "Can individuals refuse consent without penalty for non-essential purposes?"
-            ],
-            "evidence_examples": [
-              "Consent forms and mechanisms",
-              "Consent language review documentation",
-              "Purpose specification documentation",
-              "Consent collection procedures"
-            ]
-          },
-          {
             "title": "Art. 2.2 - Express Consent Requirements",
             "description": "Obtain express (explicit) consent for sensitive personal information",
-            "order_no": 2,
+            "order_no": 1,
             "summary": "Express consent required for: sensitive personal information, disclosure to third parties, new purposes, profiling/targeting, automated decision-making, and identification/location technologies",
             "questions": [
               "Is express consent obtained for sensitive information?",
@@ -156,7 +138,7 @@
           {
             "title": "Art. 2.3 - Withdrawal of Consent",
             "description": "Enable individuals to withdraw consent at any time",
-            "order_no": 3,
+            "order_no": 2,
             "summary": "Individuals must be able to withdraw consent as easily as it was given. Organization must cease processing upon withdrawal unless legal grounds exist",
             "questions": [
               "Is there a clear process for withdrawing consent?",
@@ -174,7 +156,7 @@
           {
             "title": "Art. 2.4 - Consent for Minors",
             "description": "Special consent requirements for personal information of minors",
-            "order_no": 4,
+            "order_no": 3,
             "summary": "Parental consent required for minors under 14. For minors 14 and over, their own consent or parental consent may be required depending on context",
             "questions": [
               "Is there a process to verify age of individuals?",
@@ -192,7 +174,7 @@
           {
             "title": "Art. 2.5 - Secondary Use Consent",
             "description": "Obtain fresh consent when using personal information for new purposes",
-            "order_no": 5,
+            "order_no": 4,
             "summary": "New consent required when personal information is to be used for purposes not initially disclosed, unless exemption applies",
             "questions": [
               "Is new consent obtained for secondary uses?",
